@@ -2,17 +2,20 @@ cmake_minimum_required(VERSION 3.0.0)
 project(Habitify)
 
 set(OpenGL_GL_PREFERENCE GLVND)
-#set(glfw3_DIR "${PROJECT_SOURCE_DIR}/build/external/glfw/src")
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-#find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
-
-add_subdirectory("${PROJECT_SOURCE_DIR}/external/glfw")
-
 
 add_executable(main WIN32
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
     "${PROJECT_SOURCE_DIR}/src/Application.cpp")
+
+# GLFW
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/glfw")
+target_link_libraries(main glfw)
+target_link_libraries(main OpenGL::GL)
 
 #Dear ImGui
 add_library(imgui
@@ -29,11 +32,9 @@ target_include_directories(imgui PUBLIC
     "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/external/imgui"
     "${PROJECT_SOURCE_DIR}/external/imgui/backends"
-    "${PROJECT_SOURCE_DIR}/external/glfw/include"
+    "${PROJECT_SOURCE_DIR}/external/glfw/include/GLFW"
 )
 
-target_link_libraries(main glfw ${GLFW_LIBRARIES})
-target_link_libraries(main OpenGL::GL)
 target_link_libraries(main imgui)
 
 # set the C++ standard
@@ -46,35 +47,5 @@ target_include_directories(main PUBLIC
     "${PROJECT_SOURCE_DIR}/src/"
     "${PROJECT_SOURCE_DIR}/external/imgui"
     "${PROJECT_SOURCE_DIR}/external/imgui/backends"
-    "${PROJECT_SOURCE_DIR}/external/glfw/include"
-)
-
-#########
-# Debug #
-#########
-
-set(CMAKE_CXX_FLAGS_DEBUG "-g -Og")
-
-target_compile_definitions(main PRIVATE
-    $<$<CONFIG:Debug>:DEBUG>
-)
-
-###########
-# Release #
-###########
-
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -march=native")
-
-target_compile_definitions(main PRIVATE
-    $<$<CONFIG:Release>:RELEASE>
-)
-
-##################
-# RelWithDebInfo #
-##################
-
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer -rdynamic")
-
-target_compile_definitions(main PRIVATE
-    $<$<CONFIG:Release>:RELEASE>
+    "${PROJECT_SOURCE_DIR}/external/glfw/include/GLFW"
 )
