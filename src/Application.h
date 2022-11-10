@@ -14,6 +14,8 @@
 #endif
 #include <GLFW/glfw3.h> // Will drag system OpenGL headers
 
+#include "Checklist.h"
+
 
 namespace Habitify
 {
@@ -29,8 +31,8 @@ namespace Habitify
         bool Init();
         void Shutdown();
     private:
+        Checklist *clist = nullptr;
         // Demo dependencies
-        ImGuiIO io;
         GLFWwindow *window;
         bool show_demo_window = true;
         bool show_another_window = false;

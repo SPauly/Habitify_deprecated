@@ -57,7 +57,7 @@ namespace Habitify
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
-        io = ImGui::GetIO();
+        ImGuiIO &io = ImGui::GetIO();
         (void)io;
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
         // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -118,6 +118,8 @@ namespace Habitify
     {
         if (!Init())
             return;
+
+        ImGuiIO &io = ImGui::GetIO();
         // Main loop
         while (!glfwWindowShouldClose(window))
         {
@@ -168,6 +170,16 @@ namespace Habitify
                 if (ImGui::Button("Close Me"))
                     show_another_window = false;
                 ImGui::End();
+            }
+
+            if(!clist)
+            {
+                if(ImGui::IsMouseClicked(0))
+                    clist = new Checklist();
+            }
+            else
+            {
+                clist->render();
             }
 
             // Rendering

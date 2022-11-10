@@ -12,7 +12,8 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/external/glfw")
 
 add_executable(main WIN32
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
-    "${PROJECT_SOURCE_DIR}/src/Application.cpp")
+    "${PROJECT_SOURCE_DIR}/src/Application.cpp"
+    "${PROJECT_SOURCE_DIR}/src/Checklist.cpp")
 
 #Dear ImGui
 add_library(imgui
@@ -44,6 +45,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wformat")
 target_include_directories(main PUBLIC
     "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/src/"
+    "${PROJECT_SOURCE_DIR}/src/utils"
     "${PROJECT_SOURCE_DIR}/external/imgui"
     "${PROJECT_SOURCE_DIR}/external/imgui/backends"
     "${PROJECT_SOURCE_DIR}/external/glfw/include"
