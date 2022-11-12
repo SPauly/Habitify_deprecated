@@ -10,9 +10,10 @@ find_package(OpenGL REQUIRED)
 add_subdirectory("${PROJECT_SOURCE_DIR}/external/glfw")
 
 
-add_executable(main WIN32
+add_executable(Habitify WIN32
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
     "${PROJECT_SOURCE_DIR}/src/Application.cpp"
+    "${PROJECT_SOURCE_DIR}/src/utils/Node.cpp"
     "${PROJECT_SOURCE_DIR}/src/Checklist.cpp")
 
 #Dear ImGui
@@ -33,16 +34,16 @@ target_include_directories(imgui PUBLIC
     "${PROJECT_SOURCE_DIR}/external/glfw/include"
 )
 
-target_link_libraries(main glfw ${GLFW_LIBRARIES})
-target_link_libraries(main OpenGL::GL)
-target_link_libraries(main imgui)
+target_link_libraries(Habitify glfw ${GLFW_LIBRARIES})
+target_link_libraries(Habitify OpenGL::GL)
+target_link_libraries(Habitify imgui)
 
 # set the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wformat")
 
-target_include_directories(main PUBLIC
+target_include_directories(Habitify PUBLIC
     "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/src/"
     "${PROJECT_SOURCE_DIR}/src/utils"
@@ -57,7 +58,7 @@ target_include_directories(main PUBLIC
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -Og")
 
-target_compile_definitions(main PRIVATE
+target_compile_definitions(Habitify PRIVATE
     $<$<CONFIG:Debug>:DEBUG>
 )
 
@@ -67,7 +68,7 @@ target_compile_definitions(main PRIVATE
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -march=native")
 
-target_compile_definitions(main PRIVATE
+target_compile_definitions(Habitify PRIVATE
     $<$<CONFIG:Release>:RELEASE>
 )
 
@@ -77,6 +78,6 @@ target_compile_definitions(main PRIVATE
 
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer -rdynamic")
 
-target_compile_definitions(main PRIVATE
+target_compile_definitions(Habitify PRIVATE
     $<$<CONFIG:Release>:RELEASE>
 )

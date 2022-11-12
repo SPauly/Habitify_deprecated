@@ -1,13 +1,25 @@
 #pragma once
 
+#include <cstdint>
 namespace Habitify
 {
     template <typename T>
     class Parameter
     {
     public:
-        Parameter<T>();
-        virtual ~Parameter<T>();
+        Parameter<T>(){};
+        Parameter<T>(T _t) : data(_t){};
+        virtual ~Parameter<T>(){};
+
+        inline void set(const T &_t)
+        {
+            data = _t;
+        }
+
+        inline T &get()
+        {
+            return data;
+        }
 
     private:
         T data;
@@ -21,9 +33,9 @@ namespace Habitify
         FLAG<T>(T _t) : flag(_t){};
         virtual ~FLAG<T>(){};
 
-        inline void set(T &_t)
+        inline void set(const T &_t)
         {
-            flag = _t;
+            this->flag = _t;
         }
 
         inline T& get()
@@ -33,5 +45,22 @@ namespace Habitify
 
     private:
         T flag;
+    };
+
+    enum RELEVANCE
+    {
+        REQUIRED,
+        OPTIONAL
+    };
+
+    enum NODE_TYPE 
+    {
+        FLOAT,
+        SL_FLOAT,
+        INT,
+        SL_INT,
+        UINT,
+        SL_UINT,
+        STRING
     };
 }
