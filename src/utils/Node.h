@@ -44,7 +44,7 @@ namespace Habitify
 
         char temp_id[64] = "";
         int _relevance = 0;    
-        char _crelevance[10] = "XXX";   
+        char _crelevance[9] = "XXX";   
         
         int _datatype = 0;           
         int _presentation = 0;

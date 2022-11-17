@@ -83,6 +83,18 @@ namespace Habitify
                         break;
                     }
 
+                    switch(_relevance)
+                    {
+                    case RELEVANCE::REQUIRED:
+                        strcpy(_crelevance, "REQUIRED");
+                        break;
+                    case RELEVANCE::OPTIONAL:
+                        strcpy(_crelevance, "OPTIONAL");
+                        break;
+                    default:
+                        strcpy(_crelevance, "OPTIONAL");
+                        break;
+                    };
                     // set flags and close
                     b_is_initialized.set(true);
                     should_edit.set(false);
@@ -138,6 +150,9 @@ namespace Habitify
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
         ImGui::PushStyleColor(ImGuiCol_ChildBg, color);
 
+        if(should_edit.get())
+            init();
+
         ImGui::BeginChild(id.get().c_str(), ImVec2(0, 60), true, window_flags);
 
         if (ImGui::BeginMenuBar())
@@ -153,11 +168,12 @@ namespace Habitify
             ImGui::EndMenuBar();
         }
 
-        render_function();
+        this->render_function();
 
-        ImGui::EndChild();
+        
         ImGui::PopStyleVar();
         ImGui::PopStyleColor();
+        ImGui::EndChild();
     }
 
     void Node::render_int()
@@ -176,13 +192,9 @@ namespace Habitify
 
     void Node::render_boolean()
     {
-        if (ImGui::RadioButton("Yes", &_boolean, 1))
-            ;
-        ImGui::SameLine();
-        if (ImGui::RadioButton("No", &_boolean, 0))
-            ;
-        ImGui::SameLine();
-        ImGui::Text(_crelevance);
+        ImGui::RadioButton("Yes", &_boolean, 1);        ImGui::SameLine();
+        ImGui::RadioButton("No", &_boolean, 0);         ImGui::SameLine();
+        ImGui::Text(&_crelevance[0]);
     }
 
     void Node::operate_on_data(NODE_TYPE _type, std::function<void()> _func){};

@@ -105,6 +105,8 @@ namespace Habitify
 
     void Application::Shutdown()
     {
+        if(clist)
+            delete clist;
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
