@@ -38,7 +38,7 @@ namespace Habitify
             this->flag = _t;
         }
 
-        inline T& get()
+        inline T &get()
         {
             return flag;
         }
@@ -53,14 +53,19 @@ namespace Habitify
         OPTIONAL
     };
 
-    enum NODE_TYPE 
+    enum NODE_TYPE
     {
-        FLOAT,
-        SL_FLOAT,
+        BOOLEAN,
         INT,
-        SL_INT,
-        UINT,
-        SL_UINT,
+        FLOAT,
         STRING
+    };
+
+    enum NODE_TYPE_PRESENTATION
+    {
+        INPUT,
+        SLIDER,
+        ONE_LINER,
+        LONG
     };
 }

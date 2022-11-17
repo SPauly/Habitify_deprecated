@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <string>
-#include <functional>
 
 #include "imgui.h"
 
@@ -28,6 +27,5 @@ namespace Habitify
         FLAG<bool> is_initialized = false;
         Node temp;
         std::vector<Node> nodes;
-        std::vector<std::function<void()>> node_render_functions;
     };
 }
