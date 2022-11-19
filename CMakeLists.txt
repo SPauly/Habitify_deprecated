@@ -13,6 +13,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/external/glfw")
 add_executable(Habitify WIN32
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
     "${PROJECT_SOURCE_DIR}/src/Application.cpp"
+    "${PROJECT_SOURCE_DIR}/src/Board.cpp"
     "${PROJECT_SOURCE_DIR}/src/utils/Node.cpp"
     "${PROJECT_SOURCE_DIR}/src/Checklist.cpp")
 
@@ -39,7 +40,7 @@ target_link_libraries(Habitify OpenGL::GL)
 target_link_libraries(Habitify imgui)
 
 # set the C++ standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wformat")
 

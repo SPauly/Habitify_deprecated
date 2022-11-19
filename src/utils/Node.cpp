@@ -80,6 +80,7 @@ namespace Habitify
                         render_function = std::bind(Node::render_string, this);
                         STRING = new std::string;
                     default:
+                        render_function = std::bind(Node::render_boolean, this);
                         break;
                     }
 
@@ -180,20 +181,18 @@ namespace Habitify
     {
         if (min < 0)
         {
-          //  ImGui::InputScalar(_crelevance, ImGuiDataType_S64, INT, &s64);
-          ImGui::Text("hi");
+          ImGui::InputScalar(_crelevance, ImGuiDataType_S64, INT, &s64);
         }
         else
         {
-            ImGui::Text("No");
-            //ImGui::InputScalar(_crelevance, ImGuiDataType_U64, UINT, &u64);
+            ImGui::InputScalar(_crelevance, ImGuiDataType_U64, UINT, &u64);
         }
     }
 
     void Node::render_boolean()
     {
-        ImGui::RadioButton("Yes", &_boolean, 1);        ImGui::SameLine();
-        ImGui::RadioButton("No", &_boolean, 0);         ImGui::SameLine();
+        ImGui::RadioButton(id.get().c_str(), &_boolean, 1);        ImGui::SameLine();
+        //ImGui::RadioButton("No " + id.get().c_str()), &_boolean, 0);         ImGui::SameLine();
         ImGui::Text(&_crelevance[0]);
     }
 

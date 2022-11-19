@@ -14,8 +14,12 @@
 #endif
 #include <GLFW/glfw3.h> // Will drag system OpenGL headers
 
-#include "Checklist.h"
+#include <vector>
+#include <memory>
+#include <functional>
 
+#include "utils/Layer.h"
+#include "Board.h"
 
 namespace Habitify
 {
@@ -26,16 +30,36 @@ namespace Habitify
         ~Application() = default;
 
         void Run();
-        
+
+        template<typename T>
+        void PushLayer();
+        void PushLayer(const std::shared_ptr<Layer> &);
+
+        void Close();
     private:
         bool Init();
         void Shutdown();
     private:
-        Checklist *clist = nullptr;
         // Demo dependencies
         GLFWwindow *window;
-        bool show_demo_window = true;
-        bool show_another_window = false;
         ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        float m_TimeStep = 0.0f;
+		float m_FrameTime = 0.0f;
+		float m_LastFrameTime = 0.0f;   
+
+        std::shared_ptr<Board> m_board;
+
+        std::vector<std::shared_ptr<Layer>> m_LayerStack;
+    };
+
+    class ExampleLayer : public Habitify::Layer
+    {
+    public:
+        virtual void OnUIRender() override; 
+
+    private:
+            bool show_demo_window = true;
+        bool show_another_window = false;
+        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);  
     };
 }
