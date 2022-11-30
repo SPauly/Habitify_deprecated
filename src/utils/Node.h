@@ -1,6 +1,7 @@
 #pragma once
 
 #include "imgui.h"
+#include "Layer.h"
 #include "DataTypes.h"
 
 #include <string>
@@ -8,6 +9,19 @@
 
 namespace Habitify
 {
+    class Node_ : public Layer
+    {
+    public:
+        Node_(){};
+        virtual ~Node_(){};
+
+        virtual void OnUIRender() override;
+    
+    private:
+        FLAG<bool> b_edit_mode = false;
+        Parameter<std::string> id;
+        ImVec4 color = {0.4f, 0.7f, 0.0f, 0.5f};
+    };
 
     class Node
     {

@@ -3,6 +3,33 @@
 
 namespace Habitify
 {
+    void Node_::OnUIRender()
+    {
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+        window_flags |= ImGuiWindowFlags_MenuBar;
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, color);
+
+        ImGui::BeginChild(id.get().c_str(), ImVec2(0, 60), true, window_flags);
+
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu(id.get().c_str()))
+            {
+                if (ImGui::MenuItem("Edit Data Node"))
+                {
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }
+        
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
+        ImGui::EndChild();
+    }
+
+
     Node::Node()
     {
     }

@@ -14,6 +14,12 @@ static void glfw_error_callback(int error, const char *description)
 
 namespace Habitify
 {
+    Application *Application::s_Instance = nullptr;
+    
+    Application::Application()
+    {
+        s_Instance = this;
+    }
 
     bool Application::Init()
     {

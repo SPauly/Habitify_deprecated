@@ -26,7 +26,7 @@ namespace Habitify
     class Application
     {
     public:
-        Application() = default;
+        Application();
         ~Application() = default;
 
         void Run();
@@ -34,6 +34,8 @@ namespace Habitify
         template<typename T>
         void PushLayer();
         void PushLayer(const std::shared_ptr<Layer> &);
+
+        static Application& Get() {return *s_Instance; };  
 
         void Close();
     private:
@@ -50,7 +52,15 @@ namespace Habitify
         std::shared_ptr<Board> m_board;
 
         std::vector<std::shared_ptr<Layer>> m_LayerStack;
+
+    private:
+        static Application *s_Instance;
     };
+
+    Application *CreateApplication()
+    {
+        return new Application;
+    }
 
     class ExampleLayer : public Habitify::Layer
     {
@@ -58,7 +68,7 @@ namespace Habitify
         virtual void OnUIRender() override; 
 
     private:
-            bool show_demo_window = true;
+        bool show_demo_window = true;
         bool show_another_window = false;
         ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);  
     };
