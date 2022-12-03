@@ -15,7 +15,11 @@ static void glfw_error_callback(int error, const char *description)
 namespace Habitify
 {
     Application *Application::s_Instance = nullptr;
-    
+    Application *CreateApplication()
+    {
+        return new Application;
+    }
+
     Application::Application()
     {
         s_Instance = this;
@@ -139,7 +143,7 @@ namespace Habitify
             // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
             glfwPollEvents();
 
-            for (auto &layer : m_LayerStack)
+            for (auto &layer : m_layer_stack)
             {
                 layer->OnUpdate(m_TimeStep);
             }
@@ -151,7 +155,7 @@ namespace Habitify
             
             ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-            for (auto &layer : m_LayerStack)
+            for (auto &layer : m_layer_stack)
             {
                 layer->OnUIRender();
             }
@@ -186,15 +190,12 @@ namespace Habitify
     template <typename T>
     void Application::PushLayer()
     {
-        static_assert(std::is_base_of<Habitify::Layer, T>::value, "Pushed type is not subclass of Layer!");
-        m_LayerStack.emplace_back(std::make_shared<T>());
-        m_LayerStack.back()->OnAttach();
+        m_layer_stack.PushLayer<T>();
     }
 
     void Application::PushLayer(const std::shared_ptr<Layer> &layer)
     {
-        m_LayerStack.emplace_back(layer);
-        layer->OnAttach();
+        m_layer_stack.PushLayer(layer);
     }
 
     void ExampleLayer::OnUIRender()

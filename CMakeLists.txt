@@ -15,6 +15,7 @@ add_executable(Habitify WIN32
     "${PROJECT_SOURCE_DIR}/src/Application.cpp"
     "${PROJECT_SOURCE_DIR}/src/Board.cpp"
     "${PROJECT_SOURCE_DIR}/src/utils/Node.cpp"
+    "${PROJECT_SOURCE_DIR}/src/utils/LayerStack.cpp"
     "${PROJECT_SOURCE_DIR}/src/Checklist.cpp")
 
 #Dear ImGui

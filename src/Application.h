@@ -18,7 +18,7 @@
 #include <memory>
 #include <functional>
 
-#include "utils/Layer.h"
+#include "utils/LayerStack.h"
 #include "Board.h"
 
 namespace Habitify
@@ -51,16 +51,12 @@ namespace Habitify
 
         std::shared_ptr<Board> m_board;
 
-        std::vector<std::shared_ptr<Layer>> m_LayerStack;
-
+        LayerStack m_layer_stack;
     private:
         static Application *s_Instance;
     };
 
-    Application *CreateApplication()
-    {
-        return new Application;
-    }
+    Application *CreateApplication();
 
     class ExampleLayer : public Habitify::Layer
     {

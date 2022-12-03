@@ -11,6 +11,7 @@ namespace Habitify
                 {   
                     ImGui::Text("Right ");
                     mvec_nodes.push_back(std::make_shared<Node_>());
+                    m_layer_stack.PushLayer(mvec_nodes.back());
                 }
             }
             else

@@ -5,25 +5,27 @@ namespace Habitify
 {
     LayerStack::~LayerStack()
 	{
-		for (Layer* layer : mvec_layers)
+		for (std::shared_ptr<Layer> layer : mvec_layers)
 		{
 			layer->OnDetach();
-			delete layer;
+			layer.reset();
 		}
 	}
 
-	void LayerStack::PushLayer(Layer* layer)
+	void LayerStack::PushLayer(const std::shared_ptr<Layer> &layer)
 	{
 		mvec_layers.emplace(mvec_layers.begin() + m_layer_insert_index, layer);
 		m_layer_insert_index++;
+		layer->OnAttach();
 	}
 
-	void LayerStack::PushOverlay(Layer* overlay)
+	void LayerStack::PushOverlay(const std::shared_ptr<Layer> &overlay)
 	{
 		mvec_layers.emplace_back(overlay);
+		overlay->OnAttach();
 	}
 
-	void LayerStack::PopLayer(Layer* layer)
+	void LayerStack::PopLayer(std::shared_ptr<Layer> layer)
 	{
 		auto it = std::find(mvec_layers.begin(), mvec_layers.begin() + m_layer_insert_index, layer);
 		if (it != mvec_layers.begin() + m_layer_insert_index)
@@ -34,7 +36,7 @@ namespace Habitify
 		}
 	}
 
-	void LayerStack::PopOverlay(Layer* overlay)
+	void LayerStack::PopOverlay(std::shared_ptr<Layer> overlay)
 	{
 		auto it = std::find(mvec_layers.begin() + m_layer_insert_index, mvec_layers.end(), overlay);
 		if (it != mvec_layers.end())
