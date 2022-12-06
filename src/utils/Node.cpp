@@ -5,19 +5,25 @@ namespace Habitify
 {
     void Node_::OnUIRender()
     {
+        if(b_edit_mode.get())
+            init();
+
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
         window_flags |= ImGuiWindowFlags_MenuBar;
-        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, color);
+        window_flags |= ImGuiWindowFlags_NoDocking;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.0f);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, color);
 
-        ImGui::BeginChild(id.get().c_str(), ImVec2(0, 60), true, window_flags);
+        ImGui::Begin(m_id.get().c_str(), NULL, window_flags);
 
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenu(id.get().c_str()))
+            if (ImGui::BeginMenu(m_id.get().c_str()))
             {
                 if (ImGui::MenuItem("Edit Data Node"))
                 {
+                    b_edit_mode = true;
                 }
                 ImGui::EndMenu();
             }
@@ -26,7 +32,30 @@ namespace Habitify
         
         ImGui::PopStyleVar();
         ImGui::PopStyleColor();
-        ImGui::EndChild();
+        ImGui::End();
+    }
+
+    void Node_::init()
+    {
+         ImGui::OpenPopup("Data Node Editor");
+
+            if (ImGui::BeginPopupModal("Data Node Editor", NULL))
+            {
+                // Explanation Text
+                ImGui::Text("This is the Data Node Editor.\nData Nodes basically present datapoints\nthat shall be tracked");
+
+                // Get ID
+                ImGui::InputTextWithHint("Node ID", "f.e. Smartphone Time", _temp_id, IM_ARRAYSIZE(_temp_id));
+
+                if(ImGui::Button("Save"))
+                {
+                    m_id.set(_temp_id);
+                    b_edit_mode = false;
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+
+        ImGui::EndPopup();
     }
 
 

@@ -17,10 +17,14 @@ namespace Habitify
 
         virtual void OnUIRender() override;
     
+    protected:
+        void init();
+
     private:
-        FLAG<bool> b_edit_mode = false;
-        Parameter<std::string> id;
-        ImVec4 color = {0.4f, 0.7f, 0.0f, 0.5f};
+        FLAG<bool> b_edit_mode = true;
+        char _temp_id[64] = "New Node";
+        Parameter<std::string> m_id{"New Node"};
+        ImVec4 color = {0.4f, 0.7f, 0.0f, 1.0f};
     };
 
     class Node
