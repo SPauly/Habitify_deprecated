@@ -15,29 +15,16 @@ namespace Habitify
             init();
 
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-        window_flags |= ImGuiWindowFlags_MenuBar;
         window_flags |= ImGuiWindowFlags_NoDocking;
         window_flags |= ImGuiWindowFlags_NoTitleBar;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.0f);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, color);
 
         ImGui::Begin(m_id.get().c_str(), NULL, window_flags);
-
-        if (ImGui::BeginMenuBar())
-        {
-            if (ImGui::BeginMenu(m_id.get().c_str()))
-            {
-                if (ImGui::MenuItem("Edit Data Node"))
-                {
-                    b_edit_mode = true;
-                }
-                ImGui::EndMenu();
-            }
-            ImGui::EndMenuBar();
-        }
+        ImGui::Text(m_id.get().c_str());
 
         m_render_function();
-
+        
         ImGui::PopStyleVar();
         ImGui::PopStyleColor();
         ImGui::End();
@@ -56,19 +43,17 @@ namespace Habitify
             ImGui::InputTextWithHint("Node ID", "f.e. Smartphone Time", _temp_id, IM_ARRAYSIZE(_temp_id));
 
             // Get Data Type
-            ImGui::Combo("Data Type", &m_datatype, "Boolean\0Integer\0Float\0Text\0\0");
-            if (m_datatype == 1 || m_datatype == 2)
+            ImGui::Combo("Data Type", &m_datatype, "Boolean\0Number\0Text\0\0");
+            if (m_datatype == 1)
             {
                 ImGui::DragIntRange2("Set Range", &min, &max, 2, -100, 100, "Min: %d units", "Max: %d units");
-                if (m_datatype == 2 && min < 0)
-                    min = 0;
                 if (ImGui::RadioButton("Input", &m_presentation, 0))
                     ;
                 ImGui::SameLine();
                 if (ImGui::RadioButton("Slider", &m_presentation, 1))
                     ;
             }
-            else if (m_datatype == 3)
+            else if (m_datatype == 2)
             {
                 if (ImGui::RadioButton("Single Line", &m_presentation, 2))
                     ;
@@ -98,15 +83,9 @@ namespace Habitify
                     m_boolean = new int;
                     break;
                 case NODE_TYPE::INT:
-                    m_render_function = std::bind(render_int, this);
-                    if (min < 0)
-                        m_int = new int64_t;
-                    else
-                        m_uint = new uint64_t;
+                    m_render_function = std::bind(render_number, this);
+                    m_number = new float;
                     break;
-                case NODE_TYPE::FLOAT:
-                    //m_render_function = std::bind(render_float, this);
-                    m_float = new double;
                 case NODE_TYPE::STRING:
                     //m_render_function = std::bind(render_string, this);
                     m_string = new std::string;
@@ -143,8 +122,16 @@ namespace Habitify
         ImGui::RadioButton("No", m_boolean, 0);
     }
 
-    void Node_::render_int()
+    void Node_::render_number()
     {
+        if(m_presentation == NODE_TYPE_PRESENTATION::SLIDER)
+        {
+            ImGui::SliderFloat(m_crelevance, m_number, min, max,"%.1f", ImGuiSliderFlags_AlwaysClamp);
+        }
+        else
+        {
+            ImGui::InputFloat("input float", m_number, max/20, max/10, "%.3f", ImGuiInputTextFlags_AlwaysInsertMode);
+        }
     }
 
     Node::Node()

@@ -22,7 +22,7 @@ namespace Habitify
         void init();
 
         void render_boolean();
-        void render_int();
+        void render_number();
 
     private:
         //Internal use
@@ -31,6 +31,10 @@ namespace Habitify
         char m_crelevance[9] = "OPTIONAL";
 
         std::function<void()> m_render_function;
+
+        //ImGui related
+        const ImS64 m_s64 = 1ULL;
+        const ImU64 m_u64 = 1ULL;
 
         //Metadata
         Parameter<std::string> m_id{"New Node"};    
@@ -44,9 +48,7 @@ namespace Habitify
 
         //data
         int *m_boolean = nullptr;
-        int64_t *m_int = nullptr;
-        uint64_t *m_uint = nullptr;
-        double *m_float = nullptr;
+        float *m_number = nullptr;
         std::string *m_string = nullptr;
     };
 

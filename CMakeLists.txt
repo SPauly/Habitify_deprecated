@@ -9,7 +9,6 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/external/glfw")
 
-
 add_executable(Habitify WIN32
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
     "${PROJECT_SOURCE_DIR}/src/Application.cpp"
@@ -44,6 +43,7 @@ target_link_libraries(Habitify imgui)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wformat")
+set(-DCMAKE_RC_COMPILER=windres)
 
 target_include_directories(Habitify PUBLIC
     "${PROJECT_BINARY_DIR}"
