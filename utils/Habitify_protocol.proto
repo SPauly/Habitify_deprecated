@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package Habitify.Communication;
+
+service HabitifyServer {
+  rpc SaveNode(Node) returns (Status){};
+}
+
+message Node {
+
+}
+
+message Status
+{
+
+}
+
