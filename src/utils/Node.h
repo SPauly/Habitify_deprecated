@@ -15,16 +15,39 @@ namespace Habitify
         Node_(){};
         virtual ~Node_(){};
 
+        virtual void OnAttach() override;
         virtual void OnUIRender() override;
     
     protected:
         void init();
 
+        void render_boolean();
+        void render_int();
+
     private:
+        //Internal use
         FLAG<bool> b_edit_mode = true;
         char _temp_id[64] = "New Node";
-        Parameter<std::string> m_id{"New Node"};
+        char m_crelevance[9] = "OPTIONAL";
+
+        std::function<void()> m_render_function;
+
+        //Metadata
+        Parameter<std::string> m_id{"New Node"};    
+        int m_datatype = NODE_TYPE::INT;
+        int m_relevance = RELEVANCE::OPTIONAL;
+        int m_presentation = NODE_TYPE_PRESENTATION::INPUT;
+        int min = 0, max = 0;
         ImVec4 color = {0.4f, 0.7f, 0.0f, 1.0f};
+        ImVec4 colorHovered;
+        ImVec4 colorNormal;
+
+        //data
+        int *m_boolean = nullptr;
+        int64_t *m_int = nullptr;
+        uint64_t *m_uint = nullptr;
+        double *m_float = nullptr;
+        std::string *m_string = nullptr;
     };
 
     class Node
