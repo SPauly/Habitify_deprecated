@@ -1,4 +1,4 @@
-Copyright 2018 gRPC authors.
+#Copyright 2018 gRPC authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ include(ExternalProject)
 # Builds absl project from the git submodule.
 ExternalProject_Add(absl
   PREFIX absl
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../third_party/abseil-cpp"
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/grpc/third_party/abseil-cpp"
   CMAKE_CACHE_ARGS
         -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=TRUE
         -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/absl
@@ -43,7 +43,7 @@ ExternalProject_Add(absl
 # Builds c-ares project from the git submodule.
 ExternalProject_Add(c-ares
   PREFIX c-ares
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../third_party/cares/cares"
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/grpc/third_party/cares/cares"
   CMAKE_CACHE_ARGS
         -DCARES_SHARED:BOOL=OFF
         -DCARES_STATIC:BOOL=ON
@@ -54,7 +54,7 @@ ExternalProject_Add(c-ares
 # Builds protobuf project from the git submodule.
 ExternalProject_Add(protobuf
   PREFIX protobuf
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../third_party/protobuf/cmake"
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/grpc/third_party/protobuf/cmake"
   CMAKE_CACHE_ARGS
         -Dprotobuf_BUILD_TESTS:BOOL=OFF
         -Dprotobuf_WITH_ZLIB:BOOL=OFF
@@ -65,7 +65,7 @@ ExternalProject_Add(protobuf
 # Builds re2 project from the git submodule.
 ExternalProject_Add(re2
   PREFIX re2
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../third_party/re2"
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/grpc/third_party/re2"
   CMAKE_CACHE_ARGS
         -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=TRUE
         -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/re2
@@ -74,7 +74,7 @@ ExternalProject_Add(re2
 # Builds zlib project from the git submodule.
 ExternalProject_Add(zlib
   PREFIX zlib
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../third_party/zlib"
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/grpc/third_party/zlib"
   CMAKE_CACHE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/zlib
 )
@@ -96,7 +96,7 @@ endif()
 # are correctly located.
 ExternalProject_Add(grpc
   PREFIX grpc
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../.."
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/grpc"
   CMAKE_CACHE_ARGS
         -DgRPC_INSTALL:BOOL=ON
         -DgRPC_BUILD_TESTS:BOOL=OFF
@@ -146,8 +146,8 @@ ExternalProject_Add(grpc
 
 ExternalProject_Add(Habitify
   PREFIX Habitify
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.."
-  BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/helloworld"
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/HabitifyApplication"
+  BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/HabitifyApplication"
   INSTALL_COMMAND ""
   CMAKE_CACHE_ARGS
         -DProtobuf_DIR:PATH=${_FINDPACKAGE_PROTOBUF_CONFIG_DIR}
