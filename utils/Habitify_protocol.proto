@@ -3,15 +3,24 @@ syntax = "proto3";
 package Habitify.Communication;
 
 service HabitifyServer {
-  rpc SaveNode(Node) returns (Status){};
+  rpc SaveNode(Node) returns (Status){}
+  rpc GetNode(Id) returns (Node){}
 }
 
 message Node {
-
+  NodeMetadata metadata = 1;
+  NodeData data = 2;
 }
 
-message Status
+message NodeMetadata
 {
 
 }
 
+message NodeData{
+
+}
+
+message Id{
+  
+}
