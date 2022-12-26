@@ -1,8 +1,45 @@
+#########################################
+##### Build Protoc Filse + Habitify #####
+#########################################
 cmake_minimum_required(VERSION 3.5.1)
 project(Habitify)
+include(cmake/common.cmake)
 
-include(../utils/CMakeLists.txt)
+# Proto file
+get_filename_component(hw_proto "../utils/Habitify_protocol.proto" ABSOLUTE)
+get_filename_component(hw_proto_path "${hw_proto}" PATH)
 
+# Generated sources
+set(hw_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/utils/Habitify_protocol.pb.cc")
+set(hw_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/utils/Habitify_protocol.pb.h")
+set(hw_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/utils/Habitify_protocol.grpc.pb.cc")
+set(hw_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/utils/Habitify_protocol.grpc.pb.h")
+add_custom_command(
+      OUTPUT "${hw_proto_srcs}" "${hw_proto_hdrs}" "${hw_grpc_srcs}" "${hw_grpc_hdrs}"
+      COMMAND ${_PROTOBUF_PROTOC}
+      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}/utils"
+        --cpp_out "${CMAKE_CURRENT_BINARY_DIR}/utils"
+        -I "${hw_proto_path}"
+        --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
+        "${hw_proto}"
+      DEPENDS "${hw_proto}")
+
+# Include generated *.pb.h files
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/utils")
+
+# hw_grpc_proto
+add_library(hw_grpc_proto
+  ${hw_grpc_srcs}
+  ${hw_grpc_hdrs}
+  ${hw_proto_srcs}
+  ${hw_proto_hdrs})
+  
+target_link_libraries(hw_grpc_proto
+  ${_REFLECTION}
+  ${_GRPC_GRPCPP}
+  ${_PROTOBUF_LIBPROTOBUF})
+
+####### Habitify
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 
@@ -14,7 +51,10 @@ add_executable(${PROJECT_NAME} WIN32
     "${PROJECT_SOURCE_DIR}/src/Board.cpp"
     "${PROJECT_SOURCE_DIR}/src/utils/Node.cpp"
     "${PROJECT_SOURCE_DIR}/src/utils/LayerStack.cpp"
-    "${PROJECT_SOURCE_DIR}/src/Checklist.cpp")
+    "${PROJECT_SOURCE_DIR}/src/Checklist.cpp"
+)
+
+add_dependencies(${PROJECT_NAME} grpc)
 
 #Dear ImGui
 add_library(imgui
@@ -51,6 +91,7 @@ set(-DCMAKE_RC_COMPILER=windres)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${PROJECT_BINARY_DIR}"
+    "${PROJECT_BINARY_DIR}/utils"
     "${PROJECT_SOURCE_DIR}/src/"
     "${PROJECT_SOURCE_DIR}/src/utils"
     "${PROJECT_SOURCE_DIR}/external/imgui"
@@ -87,10 +128,3 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} -g -fno-omit-fram
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Release>:RELEASE>
 )
-
-# Experimental gRPC + Server build:
-# build dependencies for gRPC
-# build gRPC
-# run command to create protoc generated files
-# build HabitifyServer
-# build Habitify

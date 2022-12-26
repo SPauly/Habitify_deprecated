@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 
 # Project
-project(HelloWorld-SuperBuild C CXX)
+project(Habitify-SuperBuild)
 
 include(ExternalProject)
 
@@ -118,44 +118,14 @@ ExternalProject_Add(grpc
   DEPENDS c-ares protobuf re2 zlib absl
 )
 
-################ Build protoc files
- #build files
- ExternalProject_Add(ProtocFiles
- PREFIX ProtocFiles
- SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/utils"
- BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/utils"
- INSTALL_COMMAND ""
- CMAKE_CACHE_ARGS
-       -DProtobuf_DIR:PATH=${_FINDPACKAGE_PROTOBUF_CONFIG_DIR}
-       -Dc-ares_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/c-ares/lib/cmake/c-ares
-       -Dre2_DIR:STRING=${CMAKE_CURRENT_BINARY_DIR}/re2/lib/cmake/re2
-       -DZLIB_ROOT:STRING=${CMAKE_CURRENT_BINARY_DIR}/zlib
-       -Dabsl_DIR:STRING=${CMAKE_CURRENT_BINARY_DIR}/absl/lib/cmake/absl
-       ${_CMAKE_ARGS_OPENSSL_ROOT_DIR}
-       -DgRPC_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/grpc/lib/cmake/grpc
- DEPENDS protobuf grpc
-)
-
-# Build the helloworld projects itself using a CMakeLists.txt that assumes all the dependencies
-# have already been installed.
-# Even though helloworld is not really an "external project" from perspective of this build,
-# we are still importing it using ExternalProject_Add because that allows us to use find_package()
-# to locate all the dependencies (if we were building helloworld directly in this build we,
-# we would have needed to manually import the libraries as opposed to reusing targets exported by
-# gRPC and protobuf).
-
 ExternalProject_Add(Habitify
   PREFIX Habitify
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/HabitifyApplication"
-  BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/HabitifyApplication"
-  INSTALL_COMMAND ""
-  CMAKE_CACHE_ARGS
-        -DProtobuf_DIR:PATH=${_FINDPACKAGE_PROTOBUF_CONFIG_DIR}
-        -Dc-ares_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/c-ares/lib/cmake/c-ares
-        -Dre2_DIR:STRING=${CMAKE_CURRENT_BINARY_DIR}/re2/lib/cmake/re2
-        -DZLIB_ROOT:STRING=${CMAKE_CURRENT_BINARY_DIR}/zlib
-        -Dabsl_DIR:STRING=${CMAKE_CURRENT_BINARY_DIR}/absl/lib/cmake/absl
-        ${_CMAKE_ARGS_OPENSSL_ROOT_DIR}
-        -DgRPC_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/grpc/lib/cmake/grpc
-  DEPENDS protobuf grpc ProtocFiles
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Habitify"
+  DEPENDS grpc
+)
+
+ExternalProject_Add(HabitifyServer
+  PREFIX Habitify
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/HabitifyServer"
+  DEPENDS grpc Habitify
 )
