@@ -4,8 +4,6 @@ package Habitify.Communication;
 
 service HabitifyServer {
   rpc Ping(Id) returns (Id) {}
-  rpc SaveNode(Node) returns (Status){}
-  rpc GetNode(Id) returns (Node){}
 }
 
 message Node {
