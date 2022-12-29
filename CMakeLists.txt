@@ -30,6 +30,7 @@ if(_HAB_FULL_BUILD)
 endif()
 set(_HAB_CREATE_PROTOFILES ON CACHE BOOL "" FORCE)
 
+# Build third_party_dependencies
 if(_HAB_INITIAL_BUILD)
   ExternalProject_Add(Third_Party_Depends
     PREFIX external
@@ -54,7 +55,7 @@ set(gRPC_DIR ${CMAKE_CURRENT_BINARY_DIR}/third_party/grpc/lib/cmake/grpc)
 ###################
 ### Proto Files ###
 ###################
-if(_HAB_FULL_BUILD)
+if(_HAB_APP_BUILD)
   include(cmake/common.cmake)
   
   # Proto file
@@ -182,4 +183,15 @@ if(_HAB_FULL_BUILD)
       $<$<CONFIG:Release>:RELEASE>
   )
 
+endif()
+
+if(_HAB_SERVER_BUILD)
+  ExternalProject_Add(HabitifyServer
+        PREFIX HabitifyServer
+        SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/HabitifyServer"
+        BINARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build/HabitifyServer"
+        INSTALL_COMMAND ""
+        CMAKE_CACHE_ARGS
+          -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/HabitifyServer
+)
 endif()

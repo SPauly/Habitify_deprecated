@@ -12,13 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# cmake "superbuild" file for C++ helloworld example.
-# This build file demonstrates how to build the helloworld project
-# and all its dependencies in a single cmake build (hence "superbuild")
-# that is easy to build and maintain.
-# cmake's ExternalProject_Add() is used to import all the sub-projects,
-# including the "helloworld" project itself.
-# See https://blog.kitware.com/cmake-superbuilds-git-submodules/
+# changed by the author of this repository 
 
 cmake_minimum_required(VERSION 3.5.1)
 
@@ -26,29 +20,6 @@ cmake_minimum_required(VERSION 3.5.1)
 project(Habitify-SuperBuild)
 
 include(ExternalProject)
-
-# Build variables
-#option(_HAB_FULL_BUILD "Build all the third party projects + app and server" ON)
-#option(_HAB_NO_THIRD_BUILD "Build app and server" OFF)
-#option(_HAB_APP_BUILD "Build the app" OFF)
-#option(_HAB_SERVER_BUILD "Build the server" OFF)
-#option(_HAB_CREATE_PROTOFILES_var "Create the Protofiles" ON)
-#
-## Set Variables ---> edit here for debuging
-#set(_HAB_FULL_BUILD ON CACHE BOOL "" FORCE)
-#set(_HAB_NO_THIRD_BUILD OFF CACHE BOOL "" FORCE)
-#set(_HAB_APP_BUILD OFF CACHE BOOL "" FORCE)
-#set(_HAB_SERVER_BUILD OFF CACHE BOOL "" FORCE)
-#if(_HAB_NO_THIRD_BUILD)
-#  set(_HAB_APP_BUILD ON CACHE BOOL "" FORCE)
-#  set(_HAB_SERVER_BUILD ON CACHE BOOL "" FORCE)
-#endif()
-#set(_HAB_CREATE_PROTOFILES_var ON CACHE BOOL "" FORCE)
-
-#if(_HAB_FULL_BUILD)
-  ########################
-  #### Super-Build #######
-  ########################
 
   # Builds absl project from the git submodule.
   ExternalProject_Add(absl
@@ -148,61 +119,3 @@ include(ExternalProject)
           -DGLFW_BUILD_EXAMPLES:BOOL=OFF
           -DGLFW_INSTALL:BOOL=ON
   )
-
-  #ExternalProject_Add(Habitify
-  #  PREFIX Habitify
-  #  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Habitify"
-  #  INSTALL_COMMAND ""
-  #  CMAKE_CACHE_ARGS
-  #        -D_HAB_CREATE_PROTOFILES:BOOL=_HAB_CREATE_PROTOFILES_var
-  #        -Dglfw3_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/glfw/lib/cmake/glfw3
-  #        -DProtobuf_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/protobuf/lib/cmake/protobuf
-  #        -Dc-ares_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/c-ares/lib/cmake/c-ares
-  #        -Dre2_DIR:STRING=${CMAKE_CURRENT_BINARY_DIR}/re2/lib/cmake/re2
-  #        -DZLIB_ROOT:STRING=${CMAKE_CURRENT_BINARY_DIR}/zlib
-  #        -Dabsl_DIR:STRING=${CMAKE_CURRENT_BINARY_DIR}/absl/lib/cmake/absl
-  #        ${_CMAKE_ARGS_OPENSSL_ROOT_DIR}
-  #        -DgRPC_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/grpc/lib/cmake/grpc
-  #        -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/Habitify
-  #  DEPENDS protobuf grpc glfw
-  #)
-#
-  #ExternalProject_Add(HabitifyServer
-  #  PREFIX HabitifyServer
-  #  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/HabitifyServer"
-  #  INSTALL_COMMAND ""
-  #  DEPENDS grpc Habitify
-  #)
-
-#else()
-#  #####################
-#  ### Partial Build ###
-#  #####################
-#    if(_HAB_APP_BUILD)
-#      ExternalProject_Add(Habitify
-#      PREFIX Habitify
-#      SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Habitify"
-#      INSTALL_COMMAND ""
-#      CMAKE_CACHE_ARGS
-#            -D_HAB_CREATE_PROTOFILES:BOOL=_HAB_CREATE_PROTOFILES_var
-#            -Dglfw3_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/glfw/lib/cmake/glfw3
-#            -DProtobuf_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/protobuf/lib/cmake/protobuf
-#            -Dc-ares_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/c-ares/lib/cmake/c-ares
-#            -Dre2_DIR:STRING=${CMAKE_CURRENT_BINARY_DIR}/re2/lib/cmake/re2
-#            -DZLIB_ROOT:STRING=${CMAKE_CURRENT_BINARY_DIR}/zlib
-#            -Dabsl_DIR:STRING=${CMAKE_CURRENT_BINARY_DIR}/absl/lib/cmake/absl
-#            ${_CMAKE_ARGS_OPENSSL_ROOT_DIR}
-#            -DgRPC_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/grpc/lib/cmake/grpc
-#      )
-#    endif()
-#
-#    if(_HAB_SERVER_BUILD)
-#      ExternalProject_Add(HabitifyServer
-#      PREFIX HabitifyServer
-#      INSTALL_COMMAND ""
-#      SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/HabitifyServer"
-#      )
-#    endif()
-#
-#endif()
-
