@@ -10,7 +10,7 @@
 
 namespace HabitifyServer
 {
-    class HabitifyServer final : public Habitify::Communication::Service
+    class Server
     {
         
     };
