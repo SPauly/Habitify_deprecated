@@ -21,14 +21,14 @@ option(_HAB_CREATE_PROTOFILES "Create the Protofiles" ON)
 
 # Set Variables ---> edit here for debuging
 set(_HAB_INITIAL_BUILD OFF CACHE BOOL "" FORCE)
-set(_HAB_FULL_BUILD ON CACHE BOOL "" FORCE)
+set(_HAB_FULL_BUILD OFF CACHE BOOL "" FORCE)
 set(_HAB_APP_BUILD OFF CACHE BOOL "" FORCE)
-set(_HAB_SERVER_BUILD OFF CACHE BOOL "" FORCE)
+set(_HAB_SERVER_BUILD ON CACHE BOOL "" FORCE)
 if(_HAB_FULL_BUILD)
   set(_HAB_APP_BUILD ON CACHE BOOL "" FORCE)
   set(_HAB_SERVER_BUILD ON CACHE BOOL "" FORCE)
 endif()
-set(_HAB_CREATE_PROTOFILES ON CACHE BOOL "" FORCE)
+set(_HAB_CREATE_PROTOFILES OFF CACHE BOOL "" FORCE)
 
 # Build third_party_dependencies
 if(_HAB_INITIAL_BUILD)
@@ -59,43 +59,43 @@ if(_HAB_APP_BUILD)
   include(cmake/common.cmake)
   
   # Proto file
-  get_filename_component(hw_proto "utils/Habitify_protocol.proto" ABSOLUTE)
-  get_filename_component(hw_proto_path "${hw_proto}" PATH)
+  get_filename_component(hab_proto "utils/Habitify_protocol.proto" ABSOLUTE)
+  get_filename_component(hab_proto_path "${hab_proto}" PATH)
   
   # Generated sources
-  set(hw_proto_srcs "${PROJECT_SOURCE_DIR}/utils/Habitify_protocol.pb.cc")
-  set(hw_proto_hdrs "${PROJECT_SOURCE_DIR}/utils/Habitify_protocol.pb.h")
-  set(hw_grpc_srcs "${PROJECT_SOURCE_DIR}/utils/Habitify_protocol.grpc.pb.cc")
-  set(hw_grpc_hdrs "${PROJECT_SOURCE_DIR}/utils/Habitify_protocol.grpc.pb.h")
+  set(hab_proto_srcs "${PROJECT_SOURCE_DIR}/utils/Habitify_protocol.pb.cc")
+  set(hab_proto_hdrs "${PROJECT_SOURCE_DIR}/utils/Habitify_protocol.pb.h")
+  set(hab_grpc_srcs "${PROJECT_SOURCE_DIR}/utils/Habitify_protocol.grpc.pb.cc")
+  set(hab_grpc_hdrs "${PROJECT_SOURCE_DIR}/utils/Habitify_protocol.grpc.pb.h")
   
   if(_HAB_CREATE_PROTOFILES)
   add_custom_command(
-        OUTPUT "${hw_proto_srcs}" "${hw_proto_hdrs}" "${hw_grpc_srcs}" "${hw_grpc_hdrs}"
+        OUTPUT "${hab_proto_srcs}" "${hab_proto_hdrs}" "${hab_grpc_srcs}" "${hab_grpc_hdrs}"
         COMMAND ${_PROTOBUF_PROTOC}
         ARGS --grpc_out "${PROJECT_SOURCE_DIR}/utils"
           --cpp_out "${PROJECT_SOURCE_DIR}/utils"
-          -I "${hw_proto_path}"
+          -I "${hab_proto_path}"
           --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
-          "${hw_proto}"
-        DEPENDS "${hw_proto}")
+          "${hab_proto}"
+        DEPENDS "${hab_proto}")
   endif()
   
   include_directories("${PROJECT_SOURCE_DIR}/utils")
   
-  # hw_grpc_proto
-  add_library(hw_grpc_proto
-    ${hw_grpc_srcs}
-    ${hw_grpc_hdrs}
-    ${hw_proto_srcs}
-    ${hw_proto_hdrs})
+  # hab_grpc_proto
+  add_library(hab_grpc_proto
+    ${hab_grpc_srcs}
+    ${hab_grpc_hdrs}
+    ${hab_proto_srcs}
+    ${hab_proto_hdrs})
   
-  target_include_directories(hw_grpc_proto PUBLIC
+  target_include_directories(hab_grpc_proto PUBLIC
       "${PROJECT_SOURCE_DIR}/utils"
       "${PROJECT_SOURCE_DIR}/build/third_party/protobuf/include"
       "${PROJECT_SOURCE_DIR}/build/third_party/grpc/include"
   )
     
-  target_link_libraries(hw_grpc_proto
+  target_link_libraries(hab_grpc_proto
     ${_REFLECTION}
     ${_GRPC_GRPCPP}
     ${_PROTOBUF_LIBPROTOBUF})
@@ -138,7 +138,7 @@ if(_HAB_APP_BUILD)
   target_link_libraries(${PROJECT_NAME} OpenGL::GL)
   target_link_libraries(${PROJECT_NAME} imgui)
   target_link_libraries(${PROJECT_NAME}
-  hw_grpc_proto
+  hab_grpc_proto
   ${_REFLECTION}
   ${_GRPC_GRPCPP}
   ${_PROTOBUF_LIBPROTOBUF})
@@ -192,6 +192,7 @@ if(_HAB_SERVER_BUILD)
         BINARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build/HabitifyServer"
         INSTALL_COMMAND ""
         CMAKE_CACHE_ARGS
+          -D_HAB_CREATE_PROTOFILES:BOOL=_HAB_CREATE_PROTOFILES
           -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/HabitifyServer
 )
 endif()
