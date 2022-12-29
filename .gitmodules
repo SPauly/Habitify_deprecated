@@ -5,3 +5,6 @@
 [submodule "GLFW"]
 	path = External/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "External/grpc"]
+	path = External/grpc
+	url = https://github.com/grpc/grpc

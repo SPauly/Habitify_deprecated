@@ -2,7 +2,7 @@
 
 
 int main(){
-    Habitify::Application *app = new Habitify::Application();
+    Habitify::Application *app = Habitify::CreateApplication();
     app->Run();
     delete app;
     return 0;
