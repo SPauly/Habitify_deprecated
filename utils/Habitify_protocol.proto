@@ -2,23 +2,10 @@ syntax = "proto3";
 
 package Habitify.Communication;
 
-service HabitifyServer {
+service HabServer {
   rpc Ping(Id) returns (Id) {}
 }
 
-message Node {
-  NodeMetadata metadata = 1;
-  NodeData data = 2;
-}
-
-message NodeMetadata{
-
-}
-
-message NodeData {
-
-}
-
 message Id{
-  
+    int32 id = 1;
 }

@@ -7,17 +7,18 @@ project(HabitifyServer)
 #############
 #get parent directory
 #cmake_path(GET "${PROJECT_SOURCE_DIR}" PARENT_PATH _habs_parent_dir)
-get_filename_component(_habs_parent_dir ${PROJECT_SOURCE_DIR}/.. ABSOLUTE) 
+get_filename_component(_habs_parent_dir ${PROJECT_SOURCE_DIR}/.. REALPATH) 
+message(STATUS "PARENT DIR:::::: ${_habs_parent_dir}")
 # set gRPC directories
-set(glfw3_DIR ${_habs_parent_dir}/build/third_party/glfw/lib/cmake/glfw3)
-set(Protobuf_DIR ${_habs_parent_dir}/build/third_party/protobuf/lib/cmake/protobuf)
-set(c-ares_DIR ${_habs_parent_dir}/build/third_party/c-ares/lib/cmake/c-ares)
-set(re2_DIR ${_habs_parent_dir}/build/third_party/re2/lib/cmake/re2)
-set(ZLIB_ROOT ${_habs_parent_dir}/build/third_party/zlib)
-set(absl_DIR ${_habs_parent_dir}/build/third_party/absl/lib/cmake/absl)
-set(gRPC_DIR ${_habs_parent_dir}/build/third_party/grpc/lib/cmake/grpc)
+set(glfw3_DIR ${CMAKE_CURRENT_BINARY_DIR}/../third_party/glfw/lib/cmake/glfw3)
+set(Protobuf_DIR ${CMAKE_CURRENT_BINARY_DIR}/../third_party/protobuf/lib/cmake/protobuf)
+set(c-ares_DIR ${CMAKE_CURRENT_BINARY_DIR}/../third_party/c-ares/lib/cmake/c-ares)
+set(re2_DIR ${CMAKE_CURRENT_BINARY_DIR}/../third_party/re2/lib/cmake/re2)
+set(ZLIB_ROOT ${CMAKE_CURRENT_BINARY_DIR}/../third_party/zlib)
+set(absl_DIR ${CMAKE_CURRENT_BINARY_DIR}/../third_party/absl/lib/cmake/absl)
+set(gRPC_DIR ${CMAKE_CURRENT_BINARY_DIR}/../third_party/grpc/lib/cmake/grpc)
 # protoc files
-get_filename_component(hab_proto "utils/Habitify_protocol.proto" ABSOLUTE)
+get_filename_component(hab_proto "../utils/Habitify_protocol.proto" ABSOLUTE)
 get_filename_component(hab_proto_path "${hab_proto}" PATH)
 set(hab_proto_srcs "${_habs_parent_dir}/utils/Habitify_protocol.pb.cc")
 set(hab_proto_hdrs "${_habs_parent_dir}/utils/Habitify_protocol.pb.h")
@@ -28,13 +29,15 @@ set(hab_grpc_hdrs "${_habs_parent_dir}/utils/Habitify_protocol.grpc.pb.h")
 include(../cmake/common.cmake)
 include_directories(${_habs_parent_dir}/utils)
 
+message(STATUS "Hab_proto is:::::: ${hab_proto_path}")
+
 # Generate Protoc Files
 if(_HAB_CREATE_PROTOFILES)
 add_custom_command(
       OUTPUT "${hab_proto_srcs}" "${hab_proto_hdrs}" "${hab_grpc_srcs}" "${hab_grpc_hdrs}"
       COMMAND ${_PROTOBUF_PROTOC}
-      ARGS --grpc_out "${_habs_parent_dir}/utils"
-        --cpp_out "${_habs_parent_dir}/utils"
+      ARGS --grpc_out "${PROJECT_SOURCE_DIR}/utils"
+        --cpp_out "${PROJECT_SOURCE_DIR}/utils"
         -I "${hab_proto_path}"
         --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
         "${hab_proto}"

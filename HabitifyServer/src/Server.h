@@ -8,10 +8,15 @@
 
 #include "Habitify_protocol.grpc.pb.h"
 
-namespace HabitifyServer
+namespace Habitify
 {
-    class Server
+    namespace HabitifyServer
     {
+        using grpc::Status;
         
-    };
+        class Server final : public Communication::HabServer::Service
+        {
+            Status Ping(ServerContext*, const Id*, Id*) override;
+        };
+    }
 }

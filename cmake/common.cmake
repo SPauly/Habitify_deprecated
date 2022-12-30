@@ -11,6 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# changed by the author of this repository
+
+set(_hab_build_dir "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "")
+message(STATUS "build dir is::::::: ${_hab_build_dir}")
+
+set(glfw3_DIR ${_hab_build_dir}/third_party/glfw/lib/cmake/glfw3)
+set(Protobuf_DIR ${_hab_build_dir}/third_party/protobuf/lib/cmake/protobuf)
+set(c-ares_DIR ${_hab_build_dir}/third_party/c-ares/lib/cmake/c-ares)
+set(re2_DIR ${_hab_build_dir}/third_party/re2/lib/cmake/re2)
+set(ZLIB_ROOT ${_hab_build_dir}/third_party/zlib)
+set(absl_DIR ${_hab_build_dir}/third_party/absl/lib/cmake/absl)
+set(gRPC_DIR ${_hab_build_dir}/third_party/grpc/lib/cmake/grpc)
+set(hab_grpc_proto_DIR ${_hab_build_dir}/utils)
 
 # Find Protobuf installation
 # Looks for protobuf-config.cmake file installed by Protobuf's cmake installation.

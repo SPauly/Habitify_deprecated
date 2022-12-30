@@ -12,6 +12,9 @@
 
 build/
 
+#protoc files
+*.pb.h
+*.pb.cc
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
