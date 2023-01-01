@@ -1,9 +1,12 @@
 #include <iostream>
 #include "Server.h"
 
+using Habitify::HabitifyServer;
+
 int main()
 {
-    std::cout<< "Hello world" <<std::endl;
-    std::cin.get();
+    HabServer* _server = new HabServer;
+    _server->RunServer();
+    
     return 0;
 }
