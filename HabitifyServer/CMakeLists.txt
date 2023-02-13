@@ -28,21 +28,9 @@ set(hab_grpc_hdrs "${_habs_parent_dir}/utils/Habitify_protocol.grpc.pb.h")
 # includes
 include(../cmake/common.cmake)
 include_directories(${_habs_parent_dir}/utils)
+link_directories(${CMAKE_CURRENT_BINARY_DIR}/../utils)
 
 message(STATUS "Hab_proto is:::::: ${hab_proto_path}")
-
-# Generate Protoc Files
-if(_HAB_CREATE_PROTOFILES)
-add_custom_command(
-      OUTPUT "${hab_proto_srcs}" "${hab_proto_hdrs}" "${hab_grpc_srcs}" "${hab_grpc_hdrs}"
-      COMMAND ${_PROTOBUF_PROTOC}
-      ARGS --grpc_out "${PROJECT_SOURCE_DIR}/utils"
-        --cpp_out "${PROJECT_SOURCE_DIR}/utils"
-        -I "${hab_proto_path}"
-        --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
-        "${hab_proto}"
-      DEPENDS "${hab_proto}")
-endif()
 
 ####################
 ### Build Server ###
@@ -54,9 +42,8 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   "${PROJECT_SOURCE_DIR}/src"
-  "${_habs_parent_dir}/utils"
-  "${_habs_parent_dir}/build/third_party/protobuf/include"
-  "${_habs_parent_dir}/build/third_party/grpc/include"
+  "${PROJECT_SOURCE_DIR}/../utils"
+  "${CMAKE_CURRENT_BINARY_DIR}/"
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -66,26 +53,6 @@ ${_GRPC_GRPCPP}
 ${_PROTOBUF_LIBPROTOBUF}
 )
 
-#################
-### Libraries ###
-#################
-# hab_grpc_proto
-add_library(hab_grpc_proto
-  ${hab_grpc_srcs}
-  ${hab_grpc_hdrs}
-  ${hab_proto_srcs}
-  ${hab_proto_hdrs})
-
-target_include_directories(hab_grpc_proto PUBLIC
-    "${_habs_parent_dir}/utils"
-    "${_habs_parent_dir}/build/third_party/protobuf/include"
-    "${_habs_parent_dir}/build/third_party/grpc/include"
-)
-  
-target_link_libraries(hab_grpc_proto
-  ${_REFLECTION}
-  ${_GRPC_GRPCPP}
-  ${_PROTOBUF_LIBPROTOBUF})
 
 ###############
 ### Targets ###
