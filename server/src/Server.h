@@ -16,12 +16,23 @@ namespace Habitify
 {
     namespace HabitifyServer
     {
-        using grpc::Status;
         
-        class HabServer final : public Communication::HabServer::Service
+        class HabitifyServer final : public HabCom::Server::Service
         {
-            Status Ping(ServerContext*, const Id*, Id*) override;
-            void RunServer();
+        public:
+            HabitifyServer() = default;
+            ~HabitifyServer() = default;
+
+            grpc::Status Ping(::grpc::ServerContext*, const ::HabCom::Id*, ::HabCom::Id*) override;
+            
+            void Run();
+
+        private:
+            std::string m_server_address = "0.0.0.0:50051";
+            grpc::ServerBuilder mgrpc_builder;
+            std::unique_ptr<grpc::Server> mgrpc_server;
         };
+
+        HabitifyServer* CreateServer();
     }
 }

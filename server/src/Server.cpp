@@ -4,24 +4,32 @@ namespace Habitify
 {
     namespace HabitifyServer
     {
-        Status HabServer::Ping(ServerContext* context, const Id* request, Id* response)
+        void HabitifyServer::Run()
         {
-            std::cout << "[PING]: " << request->get_id() << std::endl;
-            std::cout << "      [ANSWER]: 1234" << std::endl;
-            response->set_id(1234);
-            return Status::OK;
+            std::cout << "[INFO] Starting Server..." << std::endl;
+
+            mgrpc_builder.AddListeningPort(m_server_address, grpc::InsecureServerCredentials());
+            mgrpc_builder.RegisterService(this);
+            std::unique_ptr<grpc::Server> _server(mgrpc_builder.BuildAndStart());
+
+            std::cout << "Server Running. Waiting on " << m_server_address << std::endl;
+
+            _server->Wait();
+            return;
         }
 
-        void HabServer::RunServer()
+        ::grpc::Status HabitifyServer::Ping(::grpc::ServerContext* context, const ::HabCom::Id* request, ::HabCom::Id* response)
         {
-            std::string server_address("0.0.0.0:50051");
-
-            ServerBuilder builder;
-            builder.AddListeningPort(server_address, grpc::InsecureServerCredentials);
-            builder.RegisterService(this);
-            std::unique_ptr<Server> server(builder.BuildAndStart());
-            std::cout<<"[INFO] Server listening on " << server_address <<std::endl;
-            server->Wait();
+            std::cout << "[INFO] Ping arrives: " << request->id() << std::endl;
+            response->set_id(12345);
+            std::cout << "[INFO] Ping is returned: " << response->id() << std::endl;
+            return grpc::Status::OK;
         }
+
+        
+    HabitifyServer* CreateServer()
+    {
+        return new HabitifyServer;
+    }
     }
 }

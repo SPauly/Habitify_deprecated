@@ -14,7 +14,7 @@ include(ExternalProject)
 project(${SUP_PROJECT_NAME})
 
 # Build third_party_dependencies
-if(SUP_THIRDPARTY_BUILD)
+if(${SUP_THIRDPARTY_BUILD})
 message(STATUS "Adding Third Party Dependencies")
 message(STATUS "Using gRPC Location: ${SUP_GRPC_BINARIES_DIR}")
 
@@ -32,7 +32,7 @@ message(STATUS "Using gRPC Location: ${SUP_GRPC_BINARIES_DIR}")
   )
 endif() #SUP_THIRDPARTY_BUILD
 
-if(SUP_UTILS_BUILD)
+if(${SUP_UTILS_BUILD})
 message(STATUS "Adding Utilities")
 
   ExternalProject_Add(utils
@@ -48,7 +48,7 @@ message(STATUS "Adding Utilities")
   )
 endif() #SUP_UTILS_BUILD
 
-if(SUP_CLIENT_BUILD)
+if(${SUP_CLIENT_BUILD})
 message(STATUS "Adding Client")
 
   ExternalProject_Add(client
@@ -67,7 +67,7 @@ message(STATUS "Adding Client")
   )
 endif() #SUP_CLIENT_BUILD
 
-if(SUP_SERVER_BUILD)
+if(${SUP_SERVER_BUILD})
 message(STATUS "Adding Server")
 
   ExternalProject_Add(server

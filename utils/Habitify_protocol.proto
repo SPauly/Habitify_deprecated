@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package Habitify.Communication;
+package HabCom;
 
-service HabServer {
+service Server {
   rpc Ping(Id) returns (Id) {}
 }
 

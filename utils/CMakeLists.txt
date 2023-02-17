@@ -43,6 +43,7 @@ target_include_directories(sup_grpc_proto PUBLIC
     ${PROJECT_SOURCE_DIR}/
     ${SUP_GRPC_BINARIES_DIR}/protobuf/include/
     ${SUP_GRPC_BINARIES_DIR}/grpc/include/
+    ${SUP_GRPC_BINARIES_DIR}/absl/include
 )
   
 target_link_libraries(sup_grpc_proto
