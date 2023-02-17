@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "utils/PingDemo.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -110,9 +111,14 @@ namespace Habitify
 
         // End ImGui Window Init
 
+        //grpc init
+        msprt_channel = grpc::CreateChannel(m_server_address, grpc::InsecureChannelCredentials());
+        muprt_stub = ::HabCom::Server::NewStub(msprt_channel);
+
         this->PushLayer<ExampleLayer>();
         m_board = std::make_shared<Board>();
         PushLayer(m_board);
+        this->PushLayer(std::make_shared<PingDemo>(msprt_channel));
         return true;
     }
 

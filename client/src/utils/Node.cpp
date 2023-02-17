@@ -99,7 +99,7 @@ namespace Habitify
                 case RELEVANCE::REQUIRED:
                     strcpy(m_crelevance, "REQUIRED");
                     break;
-                case RELEVANCE::OPTIONAL:
+                case RELEVANCE::NOTREQUIRED:
                     strcpy(m_crelevance, "OPTIONAL");
                     break;
                 default:
@@ -220,7 +220,7 @@ namespace Habitify
                     case RELEVANCE::REQUIRED:
                         strcpy(_crelevance, "REQUIRED");
                         break;
-                    case RELEVANCE::OPTIONAL:
+                    case RELEVANCE::NOTREQUIRED:
                         strcpy(_crelevance, "OPTIONAL");
                         break;
                     default:

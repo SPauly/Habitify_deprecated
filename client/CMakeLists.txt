@@ -22,13 +22,17 @@ find_package(OpenGL REQUIRED)
 add_executable(${PROJECT_NAME}
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
     "${PROJECT_SOURCE_DIR}/src/Application.cpp"    
-    "${PROJECT_SOURCE_DIR}/src/LayerStack.cpp"    
+    "${PROJECT_SOURCE_DIR}/src/utils/LayerStack.cpp"    
+    "${PROJECT_SOURCE_DIR}/src/Board.cpp"    
+    "${PROJECT_SOURCE_DIR}/src/Checklist.cpp"    
+    "${PROJECT_SOURCE_DIR}/src/utils/Node.cpp"    
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${PROJECT_SOURCE_DIR}"
     "${SUP_ROOT_FOLDER}/utils"
     "${PROJECT_SOURCE_DIR}/src/"
+    "${PROJECT_SOURCE_DIR}/src/utils"
     "${SUP_ROOT_FOLDER}/external/imgui"
     "${SUP_ROOT_FOLDER}/external/imgui/backends"
     "${SUP_ROOT_FOLDER}/build/thir_party/glfw/include/"

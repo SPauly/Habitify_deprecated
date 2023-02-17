@@ -50,7 +50,7 @@ namespace Habitify
     enum RELEVANCE
     {
         REQUIRED,
-        OPTIONAL
+        NOTREQUIRED
     };
 
     enum NODE_TYPE

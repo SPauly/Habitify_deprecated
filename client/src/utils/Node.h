@@ -39,7 +39,7 @@ namespace Habitify
         //Metadata
         Parameter<std::string> m_id{"New Node"};    
         int m_datatype = NODE_TYPE::INT;
-        int m_relevance = RELEVANCE::OPTIONAL;
+        int m_relevance = RELEVANCE::NOTREQUIRED;
         int m_presentation = NODE_TYPE_PRESENTATION::INPUT;
         int min = 0, max = 0;
         ImVec4 color = {0.4f, 0.7f, 0.0f, 1.0f};
@@ -104,7 +104,7 @@ namespace Habitify
         ImVec4 colorHovered;
         ImVec4 colorNormal;
 
-        RELEVANCE relevance = RELEVANCE::OPTIONAL;
+        RELEVANCE relevance = RELEVANCE::NOTREQUIRED;
         NODE_TYPE datatype = NODE_TYPE::INT;
         NODE_TYPE_PRESENTATION presentation = NODE_TYPE_PRESENTATION::INPUT;
         int min = 0, max = 10;
