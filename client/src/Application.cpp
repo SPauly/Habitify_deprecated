@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "utils/PingDemo.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -23,6 +24,11 @@ namespace Habitify
     Application::Application()
     {
         s_Instance = this;
+    }
+
+    Application::~Application()
+    {
+        Shutdown();
     }
 
     bool Application::Init()
@@ -110,14 +116,21 @@ namespace Habitify
 
         // End ImGui Window Init
 
+        //grpc init
+        mgrpc_channel = grpc::CreateChannel(m_server_address, grpc::InsecureChannelCredentials());
+        mgrpc_stub = ::HabCom::Server::NewStub(mgrpc_channel);
+
         this->PushLayer<ExampleLayer>();
         m_board = std::make_shared<Board>();
         PushLayer(m_board);
+        this->PushLayer(std::make_shared<PingDemo>(mgrpc_channel));
         return true;
     }
 
     void Application::Shutdown()
     {
+        //shut down stub
+
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();

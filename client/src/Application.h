@@ -1,8 +1,8 @@
 #pragma once
-// Dear ImGui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
-// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan/Metal graphics context creation, etc.)
-// If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
-// Read online: https://github.com/ocornut/imgui/tree/master/docs
+
+#include <vector>
+#include <memory>
+#include <functional>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -14,9 +14,13 @@
 #endif
 #include <GLFW/glfw3.h> // Will drag system OpenGL headers
 
-#include <vector>
-#include <memory>
-#include <functional>
+#include <grpc/grpc.h>
+#include <grpcpp/channel.h>
+#include <grpcpp/client_context.h>
+#include <grpcpp/create_channel.h>
+#include <grpcpp/security/credentials.h>
+
+#include "Habitify_protocol.grpc.pb.h"
 
 #include "utils/LayerStack.h"
 #include "Board.h"
@@ -29,7 +33,7 @@ namespace Habitify
     {
     public:
         Application();
-        ~Application() = default;
+        ~Application();
 
         void Run();
 
@@ -56,6 +60,10 @@ namespace Habitify
         LayerStack m_layer_stack;
     private:
         static Application *s_Instance;
+
+        std::string m_server_address = "localhost:50051";
+        std::shared_ptr<grpc::Channel> mgrpc_channel;
+        std::unique_ptr<::HabCom::Server::Stub> mgrpc_stub;
     };
 
     Application *CreateApplication();
