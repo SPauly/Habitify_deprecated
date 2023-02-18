@@ -4,21 +4,31 @@ namespace Habitify
 {
     namespace HabitifyServer
     {
-        void HabitifyServer::Run()
+        Server::~Server()
+        {
+            Shutdown();
+        }
+
+        void Server::Run()
         {
             std::cout << "[INFO] Starting Server..." << std::endl;
 
             mgrpc_builder.AddListeningPort(m_server_address, grpc::InsecureServerCredentials());
             mgrpc_builder.RegisterService(this);
-            std::unique_ptr<grpc::Server> _server(mgrpc_builder.BuildAndStart());
+            mgrpc_server = mgrpc_builder.BuildAndStart();
 
             std::cout << "Server Running. Waiting on " << m_server_address << std::endl;
 
-            _server->Wait();
+            mgrpc_server->Wait();
             return;
         }
 
-        ::grpc::Status HabitifyServer::Ping(::grpc::ServerContext* context, const ::HabCom::Id* request, ::HabCom::Id* response)
+        void Server::Shutdown()
+        {
+            mgrpc_server->Shutdown();
+        }
+
+        ::grpc::Status Server::Ping(::grpc::ServerContext* context, const ::HabCom::Id* request, ::HabCom::Id* response)
         {
             std::cout << "[INFO] Ping arrives: " << request->id() << std::endl;
             response->set_id(12345);
@@ -27,9 +37,9 @@ namespace Habitify
         }
 
         
-    HabitifyServer* CreateServer()
+    Server* CreateServer()
     {
-        return new HabitifyServer;
+        return new Server;
     }
     }
 }

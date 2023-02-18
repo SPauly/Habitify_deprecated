@@ -17,15 +17,16 @@ namespace Habitify
     namespace HabitifyServer
     {
         
-        class HabitifyServer final : public HabCom::Server::Service
+        class Server final : public HabCom::Server::Service
         {
         public:
-            HabitifyServer() = default;
-            ~HabitifyServer() = default;
+            Server() = default;
+            ~Server();
 
             grpc::Status Ping(::grpc::ServerContext*, const ::HabCom::Id*, ::HabCom::Id*) override;
             
             void Run();
+            void Shutdown();
 
         private:
             std::string m_server_address = "0.0.0.0:50051";
@@ -33,6 +34,6 @@ namespace Habitify
             std::unique_ptr<grpc::Server> mgrpc_server;
         };
 
-        HabitifyServer* CreateServer();
+        Server* CreateServer();
     }
 }

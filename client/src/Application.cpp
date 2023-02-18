@@ -26,6 +26,11 @@ namespace Habitify
         s_Instance = this;
     }
 
+    Application::~Application()
+    {
+        Shutdown();
+    }
+
     bool Application::Init()
     {
         // Begin: ImGui Window Init
@@ -124,6 +129,8 @@ namespace Habitify
 
     void Application::Shutdown()
     {
+        //shut down stub
+         
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
