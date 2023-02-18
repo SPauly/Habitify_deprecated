@@ -62,8 +62,8 @@ namespace Habitify
         static Application *s_Instance;
 
         std::string m_server_address = "localhost:50051";
-        std::shared_ptr<grpc::Channel> msprt_channel;
-        std::unique_ptr<::HabCom::Server::Stub> muprt_stub;
+        std::shared_ptr<grpc::Channel> mgrpc_channel;
+        std::unique_ptr<::HabCom::Server::Stub> mgrpc_stub;
     };
 
     Application *CreateApplication();

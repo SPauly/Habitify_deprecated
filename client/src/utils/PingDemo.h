@@ -20,8 +20,8 @@ namespace Habitify
     {
     public:
         PingDemo() = default;
-        PingDemo(std::shared_ptr<grpc::Channel> _channel) : msprt_channel(_channel) {
-            m_stub = HabCom::Server::NewStub(msprt_channel);
+        PingDemo(std::shared_ptr<grpc::Channel> _channel) : mgrpc_channel(_channel) {
+            m_stub = HabCom::Server::NewStub(mgrpc_channel);
             m_clientID.set_id(54321);
         };
         ~PingDemo() = default;
@@ -37,7 +37,7 @@ namespace Habitify
             ImGui::End();
         };
     private:
-        std::shared_ptr<grpc::Channel> msprt_channel;
+        std::shared_ptr<grpc::Channel> mgrpc_channel;
         std::unique_ptr<HabCom::Server::Stub> m_stub;
 
         HabCom::Id m_clientID;

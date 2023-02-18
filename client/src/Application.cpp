@@ -117,20 +117,20 @@ namespace Habitify
         // End ImGui Window Init
 
         //grpc init
-        msprt_channel = grpc::CreateChannel(m_server_address, grpc::InsecureChannelCredentials());
-        muprt_stub = ::HabCom::Server::NewStub(msprt_channel);
+        mgrpc_channel = grpc::CreateChannel(m_server_address, grpc::InsecureChannelCredentials());
+        mgrpc_stub = ::HabCom::Server::NewStub(mgrpc_channel);
 
         this->PushLayer<ExampleLayer>();
         m_board = std::make_shared<Board>();
         PushLayer(m_board);
-        this->PushLayer(std::make_shared<PingDemo>(msprt_channel));
+        this->PushLayer(std::make_shared<PingDemo>(mgrpc_channel));
         return true;
     }
 
     void Application::Shutdown()
     {
         //shut down stub
-         
+
         // Cleanup
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
