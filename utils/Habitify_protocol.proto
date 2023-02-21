@@ -9,3 +9,15 @@ service Server {
 message Id{
     int32 id = 1;
 }
+
+message Node{
+  string name = 1;
+  Relevance relevance = 2;
+}
+
+//types
+
+enum Relevance{
+    REQUIRED = 0;
+    NOTREQUIRED = 1;
+}
