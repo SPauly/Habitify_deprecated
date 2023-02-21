@@ -26,11 +26,6 @@ namespace Habitify
         s_Instance = this;
     }
 
-    Application::~Application()
-    {
-        Shutdown();
-    }
-
     bool Application::Init()
     {
         // Begin: ImGui Window Init
@@ -143,7 +138,7 @@ namespace Habitify
     void Application::Run()
     {
         if (!Init())
-            return;
+            return; //Add error message here
 
         ImGuiIO &io = ImGui::GetIO();
         // Main loop

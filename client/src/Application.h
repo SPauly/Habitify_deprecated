@@ -33,7 +33,7 @@ namespace Habitify
     {
     public:
         Application();
-        ~Application();
+        ~Application() = default;
 
         void Run();
 
