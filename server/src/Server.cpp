@@ -28,7 +28,7 @@ namespace Habitify
             mgrpc_server->Shutdown();
         }
 
-        ::grpc::Status Server::Ping(::grpc::ServerContext* context, const ::HabCom::Id* request, ::HabCom::Id* response)
+        ::grpc::Status Server::Ping(::grpc::ServerContext *context, const ::HabCom::Id *request, ::HabCom::Id *response)
         {
             std::cout << "[INFO] Ping arrives: " << request->id() << std::endl;
             response->set_id(12345);
@@ -36,10 +36,19 @@ namespace Habitify
             return grpc::Status::OK;
         }
 
-        
-    Server* CreateServer()
-    {
-        return new Server;
-    }
+        grpc::Status Server::GetNode(::grpc::ServerContext *context, const ::HabCom::Id *request, ::HabCom::Node *response)
+        {
+
+        }
+
+        grpc::Status Server::SaveNode(::grpc::ServerContext *context, const ::HabCom::Node *request, ::HabCom::Status *response)
+        {
+            
+        }
+
+        Server *CreateServer()
+        {
+            return new Server;
+        }
     }
 }

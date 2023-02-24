@@ -24,7 +24,9 @@ namespace Habitify
             ~Server();
 
             grpc::Status Ping(::grpc::ServerContext*, const ::HabCom::Id*, ::HabCom::Id*) override;
-            
+            grpc::Status SaveNode(::grpc::ServerContext*, const ::HabCom::Node*, ::HabCom::Status*) override;
+            grpc::Status GetNode(::grpc::ServerContext*, const ::HabCom::Id*, ::HabCom::Node*) override;
+
             void Run();
             void Shutdown();
 

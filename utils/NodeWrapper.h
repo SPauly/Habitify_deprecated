@@ -9,12 +9,17 @@ namespace Habitify
     class NodeWrapper
     {
     public:
-        NodeWrapper(){
+        NodeWrapper()
+        {
             mptr_node = std::make_unique<HabCom::Node>();
+        };
+        NodeWrapper(const HabCom::Node *_node)
+        {
+            mptr_node = std::make_unique<HabCom::Node>(_node);
         };
         virtual ~NodeWrapper() = default;
 
-        HabCom::Node* operator->()
+        HabCom::Node *operator->()
         {
             return mptr_node.get();
         }
