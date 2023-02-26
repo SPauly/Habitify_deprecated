@@ -15,6 +15,6 @@ namespace Habitify
         virtual void OnUIRender() override;
     private:
         LayerStack m_layer_stack;
-        std::vector<std::shared_ptr<Node_>> mvec_nodes;
+        std::vector<std::shared_ptr<Node>> mvec_nodes;
     };
 } // namespace Habitify

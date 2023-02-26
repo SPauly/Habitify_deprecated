@@ -7,13 +7,15 @@
 #include <string>
 #include <functional>
 
+#include "NodeWrapper.h"
+
 namespace Habitify
 {
-    class Node_ : public Layer
+    class Node : public Layer
     {
     public:
-        Node_(){};
-        virtual ~Node_(){};
+        Node(){};
+        virtual ~Node(){};
 
         virtual void OnAttach() override;
         virtual void OnUIRender() override;
@@ -35,23 +37,24 @@ namespace Habitify
         //ImGui related
         const ImS64 m_s64 = 1ULL;
         const ImU64 m_u64 = 1ULL;
-
-        //Metadata
-        Parameter<std::string> m_id{"New Node"};    
-        int m_datatype = NODE_TYPE::INT;
-        int m_relevance = RELEVANCE::NOTREQUIRED;
-        int m_presentation = NODE_TYPE_PRESENTATION::INPUT;
-        int min = 0, max = 0;
-        ImVec4 color = {0.4f, 0.7f, 0.0f, 1.0f};
         ImVec4 colorHovered;
         ImVec4 colorNormal;
 
+        //Metadata
+        Parameter<std::string> _id{"New Node"};    
+        int _type, _relevance, _type_presentation;
+        int _min = 0, _max = 0;
+        ImVec4 _color;
+
         //data
-        int *m_boolean = nullptr;
-        float *m_number = nullptr;
-        std::string *m_string = nullptr;
+        int *_boolean = nullptr;
+        float *_number = nullptr;
+        std::string *_string = nullptr;
+
+        NodeWrapper node;
     };
 
+/*
     class Node
     {
     public:
@@ -116,4 +119,5 @@ namespace Habitify
         double *FLOAT = nullptr;
         std::string *STRING = nullptr;
     };
+    */
 }

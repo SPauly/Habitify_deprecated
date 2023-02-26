@@ -16,7 +16,7 @@ namespace Habitify
             if (ImGui::IsMouseClicked(1))
             {
                 ImGui::Text("Right ");
-                mvec_nodes.push_back(std::make_shared<Node_>());
+                mvec_nodes.push_back(std::make_shared<Node>());
                 m_layer_stack.PushLayer(mvec_nodes.back());
             }
         }

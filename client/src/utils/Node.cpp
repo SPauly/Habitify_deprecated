@@ -3,13 +3,23 @@
 
 namespace Habitify
 {
-    void Node_::OnAttach()
+    void Node::OnAttach()
     {
-        m_boolean = new int;
-        m_render_function = m_render_function = std::bind(render_boolean, this);
+        _id.set(node->name());
+        _type = node->type();
+        _relevance = node->relevance();
+        _type_presentation = node->type_representation();
+        _min = node->min();
+        _max = node->max();
+        _color.x = node->color().x();
+        _color.y = node->color().y();
+        _color.z = node->color().z();
+        _color.w = node->color().w();
+
+        m_render_function = std::bind(render_boolean, this);
     }
 
-    void Node_::OnUIRender()
+    void Node::OnUIRender()
     {
         if (b_edit_mode.get())
             init();
@@ -18,10 +28,10 @@ namespace Habitify
         window_flags |= ImGuiWindowFlags_NoDocking;
         window_flags |= ImGuiWindowFlags_NoTitleBar;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.0f);
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, color);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, node->color().x());
 
-        ImGui::Begin(m_id.get().c_str(), NULL, window_flags);
-        ImGui::Text(m_id.get().c_str());
+        ImGui::Begin(node->name().c_str(), NULL, window_flags);
+        ImGui::Text(node->name().c_str());
 
         m_render_function();
         
@@ -30,7 +40,7 @@ namespace Habitify
         ImGui::End();
     }
 
-    void Node_::init()
+    void Node::init()
     {
         ImGui::OpenPopup("Data Node Editor");
 
@@ -43,10 +53,10 @@ namespace Habitify
             ImGui::InputTextWithHint("Node ID", "f.e. Smartphone Time", _temp_id, IM_ARRAYSIZE(_temp_id));
 
             // Get Data Type
-            ImGui::Combo("Data Type", &m_datatype, "Boolean\0Number\0Text\0\0");
-            if (m_datatype == 1)
+            ImGui::Combo("Data Type", type, "Boolean\0Number\0Text\0\0");
+            if (node->type() == 1)
             {
-                ImGui::DragIntRange2("Set Range", &min, &max, 2, -100, 100, "Min: %d units", "Max: %d units");
+                ImGui::DragIntRange2("Set Range", min(), max(), 2, -100, 100, "Min: %d units", "Max: %d units");
                 if (ImGui::RadioButton("Input", &m_presentation, 0))
                     ;
                 ImGui::SameLine();
@@ -115,14 +125,14 @@ namespace Habitify
         ImGui::EndPopup();
     }
 
-    void Node_::render_boolean()
+    void Node::render_boolean()
     {
         ImGui::RadioButton("Yes", m_boolean, 1);
         ImGui::SameLine();
         ImGui::RadioButton("No", m_boolean, 0);
     }
 
-    void Node_::render_number()
+    void Node::render_number()
     {
         if(m_presentation == NODE_TYPE_PRESENTATION::SLIDER)
         {
@@ -134,6 +144,7 @@ namespace Habitify
         }
     }
 
+/*
     Node::Node()
     {
     }
@@ -328,4 +339,5 @@ namespace Habitify
     }
 
     void Node::operate_on_data(NODE_TYPE _type, std::function<void()> _func){};
+*/
 }
