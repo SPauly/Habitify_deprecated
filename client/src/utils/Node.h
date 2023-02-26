@@ -41,16 +41,6 @@ namespace Habitify
         ImVec4 colorNormal;
 
         //Metadata
-        Parameter<std::string> _id{"New Node"};    
-        int _type, _relevance, _type_presentation;
-        int _min = 0, _max = 0;
-        ImVec4 _color;
-
-        //data
-        int *_boolean = nullptr;
-        float *_number = nullptr;
-        std::string *_string = nullptr;
-
         NodeWrapper node;
     };
 

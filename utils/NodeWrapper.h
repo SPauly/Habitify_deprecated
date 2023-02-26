@@ -24,13 +24,13 @@ namespace Habitify
         };
         virtual ~NodeWrapper() = default;
 
-        const HabCom::Node *operator->()
+        HabCom::Node *operator->()
         {
             std::scoped_lock lock(m_mux);
             return mptr_node.get();
         }
 
-        bool set_temp_copy_flag(bool _flag)
+        bool set_temp_copy(bool _flag)
         {
             std::scoped_lock lock(m_mux);
 

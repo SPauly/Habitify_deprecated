@@ -5,17 +5,7 @@ namespace Habitify
 {
     void Node::OnAttach()
     {
-        _id.set(node->name());
-        _type = node->type();
-        _relevance = node->relevance();
-        _type_presentation = node->type_representation();
-        _min = node->min();
-        _max = node->max();
-        _color.x = node->color().x();
-        _color.y = node->color().y();
-        _color.z = node->color().z();
-        _color.w = node->color().w();
-
+        node.set_temp_copy(true);
         m_render_function = std::bind(render_boolean, this);
     }
 
@@ -53,63 +43,66 @@ namespace Habitify
             ImGui::InputTextWithHint("Node ID", "f.e. Smartphone Time", _temp_id, IM_ARRAYSIZE(_temp_id));
 
             // Get Data Type
-            ImGui::Combo("Data Type", type, "Boolean\0Number\0Text\0\0");
-            if (node->type() == 1)
+            ImGui::Combo("Data Type", &node.get_mutable()->_type, "Boolean\0Number\0Text\0\0");
+            if (node.get_mutable()->_type == 1)
             {
-                ImGui::DragIntRange2("Set Range", min(), max(), 2, -100, 100, "Min: %d units", "Max: %d units");
-                if (ImGui::RadioButton("Input", &m_presentation, 0))
+                ImGui::DragIntRange2("Set Range", &node.get_mutable()->_min, &node.get_mutable()->_max, 2, -100, 100, "Min: %d units", "Max: %d units");
+                if (ImGui::RadioButton("Input", &node.get_mutable()->_type_presentation, 0))
                     ;
                 ImGui::SameLine();
-                if (ImGui::RadioButton("Slider", &m_presentation, 1))
+                if (ImGui::RadioButton("Slider", &node.get_mutable()->_type_presentation, 1))
                     ;
             }
-            else if (m_datatype == 2)
+            else if (node.get_mutable()->_type == 2)
             {
-                if (ImGui::RadioButton("Single Line", &m_presentation, 2))
+                if (ImGui::RadioButton("Single Line", &node.get_mutable()->_type_presentation, 2))
                     ;
                 ImGui::SameLine();
-                if (ImGui::RadioButton("Multiple Lines", &m_presentation, 3))
+                if (ImGui::RadioButton("Multiple Lines", &node.get_mutable()->_type_presentation, 3))
                     ;
             }
 
             // Get Relevance
-            ImGui::Combo("Relevance", &m_relevance, "REQUIRED\0OPTIONAL\0\0");
+            ImGui::Combo("Relevance", &node.get_mutable()->_relevance, "REQUIRED\0OPTIONAL\0\0");
 
             // Get Color
-            ImGui::ColorEdit4("Color", (float *)&color);
+            //ImGui::ColorEdit4("Color", (float *)&color);
 
             if (ImGui::Button("Save"))
             {
                 // save data
-                m_id.set(_temp_id);
-                colorHovered = {color.x, color.y, color.z - .1f, color.w - .1f};
-                colorNormal = {color.x, color.y, color.z - .2f, color.w - .2f};
+                node.get_mutable()->_id = _temp_id;
+                // copy from temp to node
+                node.get_sendable(); //-> calls merge_temp()
+
+                //colorHovered = {color.x, color.y, color.z - .1f, color.w - .1f};
+                //colorNormal = {color.x, color.y, color.z - .2f, color.w - .2f};
 
                 // set render function and reserve space
-                switch (m_datatype)
+                switch (node->type())
                 {
-                case NODE_TYPE::BOOLEAN:
+                case HabCom::NodeType::BOOLEAN:
                     m_render_function = std::bind(render_boolean, this);
-                    m_boolean = new int;
+                    node->set_boolean(true);
                     break;
-                case NODE_TYPE::INT:
+                case HabCom::NodeType::INT:
                     m_render_function = std::bind(render_number, this);
-                    m_number = new float;
+                    node->set_number(0.0f);
                     break;
-                case NODE_TYPE::STRING:
+                case HabCom::NodeType::STRING:
                     //m_render_function = std::bind(render_string, this);
-                    m_string = new std::string;
+                    node->set_text("");
                 default:
                     m_render_function = std::bind(render_boolean, this);
                     break;
                 }
 
-                switch (m_relevance)
+                switch (node->relevance())
                 {
-                case RELEVANCE::REQUIRED:
+                case HabCom::Relevance::REQUIRED:
                     strcpy(m_crelevance, "REQUIRED");
                     break;
-                case RELEVANCE::NOTREQUIRED:
+                case HabCom::Relevance::NOTREQUIRED:
                     strcpy(m_crelevance, "OPTIONAL");
                     break;
                 default:
@@ -127,20 +120,20 @@ namespace Habitify
 
     void Node::render_boolean()
     {
-        ImGui::RadioButton("Yes", m_boolean, 1);
+        ImGui::RadioButton("Yes", (int*)node.get_mutable()->_boolean, 1);
         ImGui::SameLine();
-        ImGui::RadioButton("No", m_boolean, 0);
+        ImGui::RadioButton("No", (int*)node.get_mutable()->_boolean, 0);
     }
 
     void Node::render_number()
     {
-        if(m_presentation == NODE_TYPE_PRESENTATION::SLIDER)
+        if(node->type_representation() == HabCom::NodeTypePresentation::SLIDER)
         {
-            ImGui::SliderFloat(m_crelevance, m_number, min, max,"%.1f", ImGuiSliderFlags_AlwaysClamp);
+            ImGui::SliderFloat(m_crelevance, node.get_mutable()->_number, node->min(), node->max(),"%.1f", ImGuiSliderFlags_AlwaysClamp);
         }
         else
         {
-            ImGui::InputFloat("input float", m_number, max/20, max/10, "%.3f", ImGuiInputTextFlags_AlwaysInsertMode);
+            ImGui::InputFloat("input float", node.get_mutable()->_number, node->max()/20, node->max()/10, "%.3f", ImGuiInputTextFlags_AlwaysInsertMode);
         }
     }
 
