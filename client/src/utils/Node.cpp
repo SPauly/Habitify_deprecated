@@ -75,7 +75,7 @@ namespace Habitify
                 // save data
                 node.get_mutable()->_id = _temp_id;
                 // copy from temp to node
-                node.get_sendable(); //-> calls merge_temp()
+                node.merge_temp(); 
 
                 //colorHovered = {color.x, color.y, color.z - .1f, color.w - .1f};
                 //colorNormal = {color.x, color.y, color.z - .2f, color.w - .2f};
@@ -84,16 +84,16 @@ namespace Habitify
                 switch (node->type())
                 {
                 case HabCom::NodeType::BOOLEAN:
-                    m_render_function = std::bind(render_boolean, this);
                     node->set_boolean(true);
+                    m_render_function = std::bind(render_boolean, this);
                     break;
                 case HabCom::NodeType::INT:
-                    m_render_function = std::bind(render_number, this);
                     node->set_number(0.0f);
+                    m_render_function = std::bind(render_number, this);
                     break;
                 case HabCom::NodeType::STRING:
-                    //m_render_function = std::bind(render_string, this);
                     node->set_text("");
+                    //m_render_function = std::bind(render_string, this);
                 default:
                     m_render_function = std::bind(render_boolean, this);
                     break;
@@ -111,6 +111,8 @@ namespace Habitify
                     strcpy(m_crelevance, "OPTIONAL");
                     break;
                 };
+
+                node.merge_temp(); //necessary to ensure temp is also up to date
                 // set flags and close
                 b_edit_mode = false;
                 ImGui::CloseCurrentPopup();
@@ -131,7 +133,7 @@ namespace Habitify
     {
         if(node->type_representation() == HabCom::NodeTypePresentation::SLIDER)
         {
-            ImGui::SliderFloat(m_crelevance, node.get_mutable()->_number, node->min(), node->max(),"%.1f", ImGuiSliderFlags_AlwaysClamp);
+            ImGui::SliderFloat(m_crelevance, node.get_mutable()->_number, (float)node->min(), (float)node->max() ,"%.1f", ImGuiSliderFlags_AlwaysClamp);
         }
         else
         {

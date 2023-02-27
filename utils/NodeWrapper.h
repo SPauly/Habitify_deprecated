@@ -111,6 +111,45 @@ namespace Habitify
             return mptr_node.get();
         }
 
+        void merge_temp()
+        {
+            if (!mptr_copy)
+                return;
+
+            mptr_node->set_name(mptr_copy->_id);
+            mptr_node->set_type((HabCom::NodeType)mptr_copy->_type);
+            mptr_node->set_relevance((HabCom::Relevance)mptr_copy->_relevance);
+            mptr_node->set_type_representation((HabCom::NodeTypePresentation)mptr_copy->_type_presentation);
+            mptr_node->set_min(mptr_copy->_min);
+            mptr_node->set_max(mptr_copy->_max);
+            mptr_node->mutable_color()->set_x(mptr_copy->_color_x);
+            mptr_node->mutable_color()->set_y(mptr_copy->_color_y);
+            mptr_node->mutable_color()->set_z(mptr_copy->_color_z);
+            mptr_node->mutable_color()->set_w(mptr_copy->_color_w);
+
+            if (mptr_node->has_boolean() || mptr_copy->_boolean)
+            {
+                if (!mptr_copy->_boolean)
+                    mptr_copy->_boolean = new bool;
+                else
+                    mptr_node->set_boolean(mptr_copy->_boolean);
+            }
+            if (mptr_node->has_number() || mptr_copy->_number)
+            {
+                if (!mptr_copy->_number)
+                    mptr_copy->_number = new float;
+                else
+                    mptr_node->set_number(*mptr_copy->_number);
+            }
+            if (mptr_node->has_text() || mptr_copy->_string)
+            {
+                if (!mptr_copy->_string)
+                    mptr_copy->_string = new std::string;
+                else
+                    mptr_node->set_text(*mptr_copy->_string);
+            }
+        }
+
     protected:
         void make_temp_copy()
         {
@@ -137,30 +176,6 @@ namespace Habitify
                 mptr_copy->_number = new float(mptr_node->number());
             if (mptr_node->has_text())
                 mptr_copy->_string = new std::string(mptr_node->text());
-        }
-
-        void merge_temp()
-        {
-            if (!mptr_copy)
-                return;
-
-            mptr_node->set_name(mptr_copy->_id);
-            mptr_node->set_type((HabCom::NodeType)mptr_copy->_type);
-            mptr_node->set_relevance((HabCom::Relevance)mptr_copy->_relevance);
-            mptr_node->set_type_representation((HabCom::NodeTypePresentation)mptr_copy->_type_presentation);
-            mptr_node->set_min(mptr_copy->_min);
-            mptr_node->set_max(mptr_copy->_max);
-            mptr_node->mutable_color()->set_x(mptr_copy->_color_x);
-            mptr_node->mutable_color()->set_y(mptr_copy->_color_y);
-            mptr_node->mutable_color()->set_z(mptr_copy->_color_z);
-            mptr_node->mutable_color()->set_w(mptr_copy->_color_w);
-
-            if (mptr_node->has_boolean())
-                mptr_node->set_boolean(mptr_copy->_boolean);
-            if (mptr_node->has_number())
-                mptr_node->set_number(*mptr_copy->_number);
-            if (mptr_node->has_text())
-                mptr_node->set_text(*mptr_copy->_string);
         }
 
     private:
