@@ -5,6 +5,8 @@ namespace Habitify
 {
     void Node::OnAttach()
     {
+        node->set_name(_temp_id);
+        node->set_boolean(false);
         node.set_temp_copy(true);
         m_render_function = std::bind(render_boolean, this);
     }
