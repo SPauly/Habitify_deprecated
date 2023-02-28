@@ -37,8 +37,8 @@ namespace Habitify
                 } ImGui::SameLine();
                 if(ImGui::Button("Save Nodes"))
                 {
-                    grpc::ClientContext context;
                     for(auto i : *mptr_nodes){
+                        grpc::ClientContext context;
                         grpc::Status status = m_stub->SaveNode(&context, *i->get_node(), &m_save_status);
                     }
                     ImGui::Text("Send nodes");
