@@ -28,10 +28,7 @@ message Node{
 }
 
 message Status{
-  enum stat{
-    OK = 0;
-    BAD = 1;
-  }
+  int32 flag = 1;
 }
 
 //types

@@ -13,7 +13,7 @@ namespace Habitify
         ~NodeHandler() = default;
 
         HabCom::Status HandleNode(const HabCom::Node*);
-        HabCom::Status SaveNode(const HabCom::Id*);
+        HabCom::Status SaveNode();
         
     private:
         std::vector<std::shared_ptr<NodeWrapper>> mvec_node_wrappers;

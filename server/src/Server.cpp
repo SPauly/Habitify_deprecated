@@ -43,7 +43,10 @@ namespace Habitify
 
         grpc::Status Server::SaveNode(::grpc::ServerContext *context, const ::HabCom::Node *request, ::HabCom::Status *response)
         {
-            
+            m_node_handler.HandleNode(request);
+            auto temp_id = request->id();
+            response->set_flag(m_node_handler.SaveNode().flag());
+            return grpc::Status::OK;
         }
 
         Server *CreateServer()
