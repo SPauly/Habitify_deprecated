@@ -19,6 +19,10 @@ namespace Habitify
 
         virtual void OnAttach() override;
         virtual void OnUIRender() override;
+
+        inline const HabCom::Node *get_node(){
+            return node.get_sendable();
+        };
     
     protected:
         void init();

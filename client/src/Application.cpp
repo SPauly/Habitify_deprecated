@@ -118,7 +118,7 @@ namespace Habitify
         this->PushLayer<ExampleLayer>();
         m_board = std::make_shared<Board>();
         PushLayer(m_board);
-        this->PushLayer(std::make_shared<PingDemo>(mgrpc_channel));
+        this->PushLayer(std::make_shared<DebugConnection>(mgrpc_channel, m_board->get_node_vec()));
         return true;
     }
 
