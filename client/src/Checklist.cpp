@@ -22,7 +22,7 @@ namespace Habitify
 
             for (Node &current : nodes)
             {
-                current.render();
+                current.OnUIRender();
             }
 
             ImGui::End();
@@ -36,12 +36,11 @@ namespace Habitify
         ImGui::InputTextWithHint("REQUIRED", "Enter Name", _list_name, IM_ARRAYSIZE(_list_name));
         for (Node &current : nodes)
         {
-            current.init();
+            current.OnAttach();
         }
         if (ImGui::Button("Add Node"))
         {
             nodes.push_back(temp);
-            nodes.back().set_edit_mode();
         }
         if (ImGui::Button("Save Checklist"))
         {

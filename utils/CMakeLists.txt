@@ -50,3 +50,11 @@ target_link_libraries(sup_grpc_proto
   ${_REFLECTION}
   ${_GRPC_GRPCPP}
   ${_PROTOBUF_LIBPROTOBUF})
+
+add_library(hab_wrapper 
+  ${PROJECT_SOURCE_DIR}/NodeWrapper.h
+)
+
+target_link_libraries(hab_wrapper
+  sup_grpc_proto
+)

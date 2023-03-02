@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "utils/PingDemo.h"
+#include "utils/DebugConnection.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -118,7 +118,7 @@ namespace Habitify
         this->PushLayer<ExampleLayer>();
         m_board = std::make_shared<Board>();
         PushLayer(m_board);
-        this->PushLayer(std::make_shared<PingDemo>(mgrpc_channel));
+        this->PushLayer(std::make_shared<DebugConnection>(mgrpc_channel, m_board->get_node_vec()));
         return true;
     }
 

@@ -24,6 +24,7 @@ link_directories(${SUP_GRPC_BINARIES_DIR}/protobuf/lib)
 add_executable(${PROJECT_NAME}
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
     "${PROJECT_SOURCE_DIR}/src/Server.cpp"    
+    "${PROJECT_SOURCE_DIR}/src/NodeHandler.cpp"    
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -39,4 +40,5 @@ sup_grpc_proto
 ${_REFLECTION}
 ${_GRPC_GRPCPP}
 ${_PROTOBUF_LIBPROTOBUF}
+hab_wrapper
 )

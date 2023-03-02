@@ -25,8 +25,6 @@
 #include "utils/LayerStack.h"
 #include "Board.h"
 
-
-
 namespace Habitify
 {
     class Application
