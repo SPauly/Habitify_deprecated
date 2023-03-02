@@ -24,8 +24,7 @@ add_executable(${PROJECT_NAME}
     "${PROJECT_SOURCE_DIR}/src/Application.cpp"    
     "${PROJECT_SOURCE_DIR}/src/utils/LayerStack.cpp"    
     "${PROJECT_SOURCE_DIR}/src/Board.cpp"    
-    "${PROJECT_SOURCE_DIR}/src/NodeHandler.cpp"    
-    "${PROJECT_SOURCE_DIR}/src/Checklist.cpp"    
+    "${PROJECT_SOURCE_DIR}/src/NodeHandler.cpp"       
     "${PROJECT_SOURCE_DIR}/src/utils/Node.cpp"    
 )
 

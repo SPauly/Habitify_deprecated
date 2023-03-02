@@ -9,12 +9,10 @@ namespace Habitify
     class NodeHandler
     {
     public:
-        NodeHandler(const LayerStack*);
+        NodeHandler() = default;
         ~NodeHandler() = default;
 
     private:
-        const LayerStack *ptr_layer_stack; 
-        std::vector<std::shared_ptr<Habitify::Node>> mvec_nodes;
     };
 
 }
