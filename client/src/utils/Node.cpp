@@ -8,7 +8,6 @@ namespace Habitify
         node->set_name(_temp_id);
         node->set_boolean(false);
         node.set_temp_copy(true);
-        m_node_name = node->name();
         m_render_function = std::bind(render_boolean, this);
     }
 
@@ -23,8 +22,8 @@ namespace Habitify
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.0f);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, node->color().x());
 
-        ImGui::Begin(m_node_name.c_str(), NULL, window_flags);
-        ImGui::Text(m_node_name.c_str());
+        ImGui::Begin(node->name().c_str(), NULL, window_flags);
+        ImGui::Text(node->name().c_str());
 
         m_render_function();
         

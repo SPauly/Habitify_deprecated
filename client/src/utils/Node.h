@@ -46,7 +46,6 @@ namespace Habitify
 
         //Metadata
         NodeWrapper node;
-        std::string m_node_name;
     };
 
 }
