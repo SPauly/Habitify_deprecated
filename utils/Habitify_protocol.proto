@@ -35,6 +35,10 @@ message Node{
   int32 max = 4;
   int32 pos_x = 5;
   int32 pos_y = 6;
+  Color color = 7;
+  Relevance relevance = 8;
+  NodeType type = 9;
+  NodeTypePresentation presentation = 10;
   
   message Color{
     float x = 1;
@@ -62,5 +66,5 @@ message Node{
     LONG = 3;
   }
 
-  repeated NodeData data = 7;
+  repeated NodeData data = 11;
 }
