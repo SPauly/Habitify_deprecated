@@ -21,7 +21,7 @@ namespace Habitify
         virtual void OnUIRender() override;
 
         inline const HabCom::Node *get_node(){
-            return node.get_sendable();
+            return node.get_node();
         };
     
     protected:
