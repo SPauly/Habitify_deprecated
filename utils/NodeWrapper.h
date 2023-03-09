@@ -43,6 +43,14 @@ namespace Habitify
             return *this;
         }
 
+        //for assigning new nodes to it
+        NodeWrapper &operator=(HabCom::Node &&_move) noexcept
+        {
+            std::scoped_lock lock(mux);
+            node = std::make_unique<HabCom::Node>(std::move(_move));
+            return *this;
+        }
+
     public:
     // accessors
         inline const HabCom::Node* get_node()
@@ -54,7 +62,12 @@ namespace Habitify
         inline std::unique_ptr<HabCom::Node> mutable_node()
         {
             std::unique_lock<std::mutex> lock(mux);
-            return std::make_unique<HabCom::Node>(*node.get());
+            return std::make_unique<HabCom::Node>(*node);
+        }
+
+        inline std::mutex& get_mutex()
+        {
+            return mux;
         }
 
     // accessors for node methods
@@ -134,23 +147,26 @@ namespace Habitify
     {
     public:
         MutableNodeLock(NodeWrapper& _wrapper) 
-            : node_wrapper(_wrapper)
+            : node_wrapper(_wrapper), mutable_node_ptr(_wrapper.mutable_node())
         {
-            mutable_node = node_wrapper.mutable_node();
+
         }
 
         ~MutableNodeLock()
         {
-            if(mutable_node)
-                mutable_node.reset();
+            if(mutable_node_ptr)
+            {
+                std::scoped_lock lock(node_wrapper.get_mutex());
+                node_wrapper = std::move(*mutable_node_ptr); //let the wrapper handle the updated version
+            }
         }
 
         HabCom::Node* operator->() const {
-            return mutable_node.get();
+            return mutable_node_ptr.get();
         }
     
     private:
         NodeWrapper &node_wrapper;
-        std::unique_ptr<HabCom::Node> mutable_node;
-    }
+        std::unique_ptr<HabCom::Node> mutable_node_ptr;
+    };
 }

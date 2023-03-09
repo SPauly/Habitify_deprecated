@@ -5,9 +5,7 @@ namespace Habitify
 {
     void Node::OnAttach()
     {
-        node->set_name(_temp_id);
-        node->set_boolean(false);
-        node.set_temp_copy(true);
+        node.set_name(_temp_id);
         m_render_function = std::bind(render_boolean, this);
     }
 
@@ -20,10 +18,10 @@ namespace Habitify
         window_flags |= ImGuiWindowFlags_NoDocking;
         window_flags |= ImGuiWindowFlags_NoTitleBar;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.0f);
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, node->color().x());
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, 0);
 
-        ImGui::Begin(node->name().c_str(), NULL, window_flags);
-        ImGui::Text(node->name().c_str());
+        ImGui::Begin(node.get_name().c_str(), NULL, window_flags);
+        ImGui::Text(node.get_name().c_str());
 
         m_render_function();
         
