@@ -15,7 +15,7 @@ namespace Habitify
     {
     public:
         Node(){};
-        virtual ~Node(){};
+        virtual ~Node();
 
         virtual void OnAttach() override;
         virtual void OnUIRender() override;
@@ -46,6 +46,7 @@ namespace Habitify
 
         //Metadata
         NodeWrapper node;
+        MutableNodeLock* locked_node_ptr;
     };
 
 }

@@ -3,6 +3,12 @@
 
 namespace Habitify
 {
+    Node::~Node()
+    {
+        if(locked_node_ptr)
+            delete locked_node_ptr;
+    }
+
     void Node::OnAttach()
     {
         node.set_name(_temp_id);
@@ -32,6 +38,11 @@ namespace Habitify
 
     void Node::init()
     {
+        if(!locked_node_ptr)
+            locked_node_ptr = new MutableNodeLock(node);
+        
+        #define MUTABLE_NODE_ACCESS locked_node_ptr->operator->()
+
         ImGui::OpenPopup("Data Node Editor");
 
         if (ImGui::BeginPopupModal("Data Node Editor", NULL))
@@ -43,27 +54,27 @@ namespace Habitify
             ImGui::InputTextWithHint("Node ID", "f.e. Smartphone Time", _temp_id, IM_ARRAYSIZE(_temp_id));
 
             // Get Data Type
-            ImGui::Combo("Data Type", &node.get_mutable()->_type, "Boolean\0Number\0Text\0\0");
-            if (node.get_mutable()->_type == 1)
+            ImGui::Combo("Data Type", (int)MUTABLE_NODE_ACCESS->type(), "Boolean\0Number\0Text\0\0");
+            if (MUTABLE_NODE_ACCESS->type() == 1)
             {
-                ImGui::DragIntRange2("Set Range", &node.get_mutable()->_min, &node.get_mutable()->_max, 2, -100, 100, "Min: %d units", "Max: %d units");
-                if (ImGui::RadioButton("Input", &node.get_mutable()->_type_presentation, 0))
+                ImGui::DragIntRange2("Set Range", &MUTABLE_NODE_ACCESS->min(), &MUTABLE_NODE_ACCESS->max(), 2, -100, 100, "Min: %d units", "Max: %d units");
+                if (ImGui::RadioButton("Input", &MUTABLE_NODE_ACCESS->_type_presentation, 0))
                     ;
                 ImGui::SameLine();
-                if (ImGui::RadioButton("Slider", &node.get_mutable()->_type_presentation, 1))
+                if (ImGui::RadioButton("Slider", &MUTABLE_NODE_ACCESS->_type_presentation, 1))
                     ;
             }
-            else if (node.get_mutable()->_type == 2)
+            else if (MUTABLE_NODE_ACCESS->type() == 2)
             {
-                if (ImGui::RadioButton("Single Line", &node.get_mutable()->_type_presentation, 2))
+                if (ImGui::RadioButton("Single Line", &MUTABLE_NODE_ACCESS->_type_presentation, 2))
                     ;
                 ImGui::SameLine();
-                if (ImGui::RadioButton("Multiple Lines", &node.get_mutable()->_type_presentation, 3))
+                if (ImGui::RadioButton("Multiple Lines", &MUTABLE_NODE_ACCESS->_type_presentation, 3))
                     ;
             }
 
             // Get Relevance
-            ImGui::Combo("Relevance", &node.get_mutable()->_relevance, "REQUIRED\0OPTIONAL\0\0");
+            ImGui::Combo("Relevance", &MUTABLE_NODE_ACCESS->mutable(), "REQUIRED\0OPTIONAL\0\0");
 
             // Get Color
             //ImGui::ColorEdit4("Color", (float *)&color);
@@ -71,7 +82,7 @@ namespace Habitify
             if (ImGui::Button("Save"))
             {
                 // save data
-                node.get_mutable()->_id = _temp_id;
+                MUTABLE_NODE_ACCESS->_id = _temp_id;
                 // copy from temp to node
                 node.merge_temp(); 
 
@@ -110,7 +121,8 @@ namespace Habitify
                     break;
                 };
 
-                node.merge_temp(); //necessary to ensure temp is also up to date
+                delete locked_node_ptr; //free lock and merge with original
+                
                 // set flags and close
                 b_edit_mode = false;
                 ImGui::CloseCurrentPopup();
@@ -122,20 +134,20 @@ namespace Habitify
 
     void Node::render_boolean()
     {
-        ImGui::RadioButton("Yes", (int*)node.get_mutable()->_boolean, 1);
+        ImGui::RadioButton("Yes", (int*)MUTABLE_NODE_ACCESS->_boolean, 1);
         ImGui::SameLine();
-        ImGui::RadioButton("No", (int*)node.get_mutable()->_boolean, 0);
+        ImGui::RadioButton("No", (int*)MUTABLE_NODE_ACCESS->_boolean, 0);
     }
 
     void Node::render_number()
     {
         if(node->type_representation() == HabCom::NodeTypePresentation::SLIDER)
         {
-            ImGui::SliderFloat(m_crelevance, node.get_mutable()->_number, (float)node->min(), (float)node->max() ,"%.1f", ImGuiSliderFlags_AlwaysClamp);
+            ImGui::SliderFloat(m_crelevance, MUTABLE_NODE_ACCESS->_number, (float)node->min(), (float)node->max() ,"%.1f", ImGuiSliderFlags_AlwaysClamp);
         }
         else
         {
-            ImGui::InputFloat("input float", node.get_mutable()->_number, node->max()/20, node->max()/10, "%.3f", ImGuiInputTextFlags_AlwaysInsertMode);
+            ImGui::InputFloat("input float", MUTABLE_NODE_ACCESS->_number, node->max()/20, node->max()/10, "%.3f", ImGuiInputTextFlags_AlwaysInsertMode);
         }
     }
 

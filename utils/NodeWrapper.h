@@ -164,9 +164,13 @@ namespace Habitify
         HabCom::Node* operator->() const {
             return mutable_node_ptr.get();
         }
+
+        
     
     private:
         NodeWrapper &node_wrapper;
         std::unique_ptr<HabCom::Node> mutable_node_ptr;
     };
+
+    #define NODE_
 }
