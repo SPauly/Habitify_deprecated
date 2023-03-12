@@ -151,13 +151,53 @@ namespace Habitify
         MutableNodeType(const HabCom::Node* _node) 
         {
             //copy data from _node to mutable version
+            _name = _node->name();
+            _id = _node->id().id();
+            _min = _node->min();
+            _max = _node->max();
+            _pos_x = _node->pos_x();
+            _pos_y = _node->pos_y();
+            _colx = _node->color().x();
+            _coly = _node->color().y();
+            _colz = _node->color().z();
+            _colw = _node->color().w();
+            _relevance = _node->relevance();
+            _type = _node->type();
+            _presentation = _node->presentation();
+            if(_node->data_size() > 0)
+            {
+                _time = _node->data().end()->time();
+                if(_node->data().end()->has_boolean())
+                    _boolean = new bool(_node->data().end()->boolean());
+                if(_node->data().end()->has_number())
+                    _number = new float(_node->data().end()->number());
+                if(_node->data().end()->has_text())
+                    _text = new std::string(_node->data().end()->text());
+            }
         }
+        
         ~MutableNodeType()
         {
             //destroy all dynamically allocated data
+            if(_boolean)
+                delete _boolean;
+            if(_number)
+                delete _number;
+            if(_text)
+                delete _text;
         }
 
+        std::string _name{""};
+        int32_t _id;
+        int32_t _min, _max;
+        int32_t _pos_x, _pos_y;
+        int32_t _colx, _coly, _colz, _colw;
+        int32_t _relevance, _type, _presentation;
 
+        HabCom::Timestamp _time;
+        bool* _boolean;
+        float* _number;
+        std::string* _text;
     };
 
     //This lock handles thread safe access to a mutable node
