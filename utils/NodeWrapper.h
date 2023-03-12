@@ -8,6 +8,7 @@
 
 namespace Habitify
 {
+    //Wrapper for the HabCom::Node message type
     class NodeWrapper
     {
     public:
@@ -59,10 +60,10 @@ namespace Habitify
             return node.get(); //should we return a copy here instead?
         }
 
-        inline std::unique_ptr<HabCom::Node> mutable_node()
+        inline std::unique_ptr<MutableNodeType> mutable_node()
         {
             std::unique_lock<std::mutex> lock(mux);
-            return std::make_unique<HabCom::Node>(*node);
+            return std::make_unique<MutableNodeType>(*node);
         }
 
         inline std::mutex& get_mutex()
@@ -143,6 +144,23 @@ namespace Habitify
         std::unique_ptr<HabCom::Node> node;
     };
 
+    //Provide a Mutable Node type; this is essentialy used to provide the mutable functionality protobuf does not implement
+    struct MutableNodeType
+    {
+        MutableNodeType() = delete;
+        MutableNodeType(const HabCom::Node* _node) 
+        {
+            //copy data from _node to mutable version
+        }
+        ~MutableNodeType()
+        {
+            //destroy all dynamically allocated data
+        }
+
+
+    };
+
+    //This lock handles thread safe access to a mutable node
     class MutableNodeLock
     {
     public:
@@ -157,20 +175,24 @@ namespace Habitify
             if(mutable_node_ptr)
             {
                 std::scoped_lock lock(node_wrapper.get_mutex());
-                node_wrapper = std::move(*mutable_node_ptr); //let the wrapper handle the updated version
+                //let the wrapper handle the updated version
             }
         }
 
-        HabCom::Node* operator->() const {
+        MutableNodeType* operator->() const {
             return mutable_node_ptr.get();
         }
 
-        
+            
     
     private:
         NodeWrapper &node_wrapper;
-        std::unique_ptr<HabCom::Node> mutable_node_ptr;
+        std::unique_ptr<MutableNodeType> mutable_node_ptr;
     };
 
-    #define NODE_
+    //This lock provides thread safe access to the data of a Node message
+    class MutableNodeDataLock
+    {
+
+    };
 }
