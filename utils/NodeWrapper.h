@@ -1,186 +1,245 @@
 #pragma once
 
 #include <memory>
-#include <string>
 #include <thread>
+#include <mutex>
 
 #include "Habitify_protocol.pb.h"
 
 namespace Habitify
 {
-    struct _temp_mutable_copy
-    {
-        _temp_mutable_copy() = default;
-        virtual ~_temp_mutable_copy()
-        {
-            if (_boolean)
-                delete _boolean;
-            if (_number)
-                delete _number;
-            if (_string)
-                delete _string;
-        }
-
-        std::string _id{"New Node"};
-        int _type, _relevance, _type_presentation;
-        int _min = 0, _max = 0;
-        int _color_x, _color_y, _color_z, _color_w;
-
-        // data
-        bool *_boolean = nullptr;
-        float *_number = nullptr;
-        std::string *_string = nullptr;
-    };
+    //Wrapper for the HabCom::Node message type
     class NodeWrapper
     {
     public:
-        // Constructor
-        NodeWrapper()
+        NodeWrapper() 
+            : node(std::make_unique<HabCom::Node>()) 
         {
-            mptr_node = std::make_unique<HabCom::Node>();
-        };
-        NodeWrapper(const HabCom::Node *_node, bool _use_temp = false)
-            : b_use_temp_copy(_use_temp)
-        {
-            mptr_node = std::make_unique<HabCom::Node>(*_node);
-            if (_use_temp)
-                make_temp_copy();
-        };
-        // Destructor
-        virtual ~NodeWrapper() = default;
-        // copy constructor
-        NodeWrapper(const NodeWrapper &_copy) : b_use_temp_copy(_copy.b_use_temp_copy)
-        {
-            mptr_node = std::make_unique<HabCom::Node>(*_copy.mptr_node);
-            if (_copy.mptr_copy)
-                mptr_copy = std::make_shared<_temp_mutable_copy>(*_copy.mptr_copy);
         }
-        // copy assignement operator
+        virtual ~NodeWrapper() = default;
+
+        NodeWrapper(const NodeWrapper &_copy)
+        {
+            std::scoped_lock lock(mux);
+            node = std::make_unique<HabCom::Node>(*_copy.node);
+        }
+
+        NodeWrapper(NodeWrapper &&_move) noexcept
+        {
+            std::scoped_lock lock(mux);
+            node = std::move(_move.node);
+        }
+
         NodeWrapper &operator=(const NodeWrapper _copy)
         {
-            b_use_temp_copy = _copy.b_use_temp_copy;
-            mptr_node = std::make_unique<HabCom::Node>(*_copy.mptr_node);
-            if (_copy.mptr_copy)
-                mptr_copy = std::make_shared<_temp_mutable_copy>(*_copy.mptr_copy);
-            return *this;
-        }
-        // Move constructor
-        NodeWrapper(NodeWrapper &&other) noexcept
-        {
-            mptr_node = std::move(other.mptr_node);
-            b_use_temp_copy = std::move(other.b_use_temp_copy);
-            mptr_copy = std::move(other.mptr_copy);
-        }
-        // Move assignement operator
-        NodeWrapper &operator=(NodeWrapper &&other) noexcept
-        {
-            if (this != &other)
-            {
-                mptr_node = std::move(other.mptr_node);
-                b_use_temp_copy = std::move(other.b_use_temp_copy);
-                mptr_copy = std::move(other.mptr_copy);
-            }
+            std::scoped_lock lock(mux);
+            node = std::make_unique<HabCom::Node>(*_copy.node);
             return *this;
         }
 
-        HabCom::Node *operator->()
+        NodeWrapper &operator=(NodeWrapper &&_move) noexcept
         {
-            return mptr_node.get();
+            std::scoped_lock lock(mux);
+            node = std::move(_move.node);
+            return *this;
         }
 
-        bool set_temp_copy(bool _flag)
+        //for assigning new nodes to it
+        NodeWrapper &operator=(HabCom::Node &&_move) noexcept
         {
-
-            if (!_flag)
-                mptr_copy.reset();
-            else
-                make_temp_copy();
-            return b_use_temp_copy = _flag;
+            std::scoped_lock lock(mux);
+            node = std::move(_move);
+            return *this;
+        }
+        
+        NodeWrapper &operator=(MutableNodeType &&_move) noexcept
+        {
+            std::scoped_lock lock(mux);
+            //move data from node
+            return *this;
         }
 
-        std::shared_ptr<_temp_mutable_copy> get_mutable()
+    public:
+    // accessors
+        inline const HabCom::Node* get_node()
         {
-            return mptr_copy;
+            std::scoped_lock lock(mux);
+            return node.get(); //should we return a copy here instead?
         }
 
-        HabCom::Node *get_sendable()
+        inline std::unique_ptr<MutableNodeType> mutable_node()
         {
-            if (b_use_temp_copy)
-                merge_temp();
-
-            return mptr_node.get();
+            std::unique_lock<std::mutex> lock(mux);
+            return std::make_unique<MutableNodeType>(*node);
         }
 
-        void merge_temp()
+        inline std::mutex& get_mutex()
         {
-            if (!mptr_copy)
-                return;
-
-            mptr_node->set_name(mptr_copy->_id);
-            mptr_node->set_type((HabCom::NodeType)mptr_copy->_type);
-            mptr_node->set_relevance((HabCom::Relevance)mptr_copy->_relevance);
-            mptr_node->set_type_representation((HabCom::NodeTypePresentation)mptr_copy->_type_presentation);
-            mptr_node->set_min(mptr_copy->_min);
-            mptr_node->set_max(mptr_copy->_max);
-            mptr_node->mutable_color()->set_x(mptr_copy->_color_x);
-            mptr_node->mutable_color()->set_y(mptr_copy->_color_y);
-            mptr_node->mutable_color()->set_z(mptr_copy->_color_z);
-            mptr_node->mutable_color()->set_w(mptr_copy->_color_w);
-
-            if (mptr_node->has_boolean() || mptr_copy->_boolean)
-            {
-                if (!mptr_copy->_boolean)
-                    mptr_copy->_boolean = new bool;
-                else
-                    mptr_node->set_boolean(mptr_copy->_boolean);
-            }
-            if (mptr_node->has_number() || mptr_copy->_number)
-            {
-                if (!mptr_copy->_number)
-                    mptr_copy->_number = new float;
-                else
-                    mptr_node->set_number(*mptr_copy->_number);
-            }
-            if (mptr_node->has_text() || mptr_copy->_string)
-            {
-                if (!mptr_copy->_string)
-                    mptr_copy->_string = new std::string;
-                else
-                    mptr_node->set_text(*mptr_copy->_string);
-            }
+            return mux;
         }
 
-    protected:
-        void make_temp_copy()
+    // accessors for node methods
+        inline const std::string &get_name()
         {
-
-            if (!mptr_copy)
-            {
-                mptr_copy = std::make_shared<_temp_mutable_copy>();
-            }
-
-            mptr_copy->_id = mptr_node->name();
-            mptr_copy->_type = mptr_node->type();
-            mptr_copy->_relevance = mptr_node->relevance();
-            mptr_copy->_type_presentation = mptr_node->type_representation();
-            mptr_copy->_min = mptr_node->min();
-            mptr_copy->_max = mptr_node->max();
-            mptr_copy->_color_x = mptr_node->color().x();
-            mptr_copy->_color_y = mptr_node->color().y();
-            mptr_copy->_color_z = mptr_node->color().z();
-            mptr_copy->_color_w = mptr_node->color().w();
-
-            if (mptr_node->has_boolean())
-                mptr_copy->_boolean = new bool(mptr_node->boolean());
-            if (mptr_node->has_number())
-                mptr_copy->_number = new float(mptr_node->number());
-            if (mptr_node->has_text())
-                mptr_copy->_string = new std::string(mptr_node->text());
+            std::scoped_lock lock(mux);
+            return node->name();
         }
+        inline void set_name(const std::string& _value)
+        {
+            std::scoped_lock lock(mux);
+            node->set_name(_value);
+        }
+
+        inline int32_t get_Id()
+        {
+            std::scoped_lock lock(mux);
+            return node->id().id();
+        }
+        inline void set_Id(const int32_t& _value)
+        {
+            std::scoped_lock lock(mux);
+            node->mutable_id()->set_id(_value);
+        }
+
+        inline int32_t get_min()
+        {
+            std::scoped_lock lock(mux);
+            return node->min();
+        }
+        inline void set_min(const int32_t& _value)
+        {
+            std::scoped_lock lock(mux);
+            node->set_min(_value);
+        }
+
+        inline int32_t get_max()
+        {
+            std::scoped_lock lock(mux);
+            return node->max();
+        }
+        inline void set_max(const int32_t& _value)
+        {
+            std::scoped_lock lock(mux);
+            node->set_max(_value);
+        }
+
+        inline int32_t get_pos_x()
+        {
+            std::scoped_lock lock(mux);
+            return node->pos_x();
+        }
+        inline void set_pos_x(const int32_t& _value)
+        {
+            std::scoped_lock lock(mux);
+            node->set_pos_x(_value);
+        }
+
+        inline int32_t get_pos_y()
+        {
+            std::scoped_lock lock(mux);
+            return node->pos_y();
+        }
+        inline void set_pos_y(const int32_t& _value)
+        {
+            std::scoped_lock lock(mux);
+            node->set_pos_y(_value);
+        }
+
 
     private:
-        std::unique_ptr<HabCom::Node> mptr_node;
-        bool b_use_temp_copy = false;
-        std::shared_ptr<_temp_mutable_copy> mptr_copy;
+        std::mutex mux;
+        std::unique_ptr<HabCom::Node> node;
+    };
+
+    //Provide a Mutable Node type; this is essentialy used to provide the mutable functionality protobuf does not implement
+    struct MutableNodeType
+    {
+        MutableNodeType() = delete;
+        MutableNodeType(const HabCom::Node* _node) 
+        {
+            //copy data from _node to mutable version
+            _name = _node->name();
+            _id = _node->id().id();
+            _min = _node->min();
+            _max = _node->max();
+            _pos_x = _node->pos_x();
+            _pos_y = _node->pos_y();
+            _colx = _node->color().x();
+            _coly = _node->color().y();
+            _colz = _node->color().z();
+            _colw = _node->color().w();
+            _relevance = _node->relevance();
+            _type = _node->type();
+            _presentation = _node->presentation();
+            if(_node->data_size() > 0)
+            {
+                _time = _node->data().end()->time();
+                if(_node->data().end()->has_boolean())
+                    _boolean = new bool(_node->data().end()->boolean());
+                if(_node->data().end()->has_number())
+                    _number = new float(_node->data().end()->number());
+                if(_node->data().end()->has_text())
+                    _text = new std::string(_node->data().end()->text());
+            }
+        }
+        
+        ~MutableNodeType()
+        {
+            //destroy all dynamically allocated data
+            if(_boolean)
+                delete _boolean;
+            if(_number)
+                delete _number;
+            if(_text)
+                delete _text;
+        }
+
+        std::string _name{""};
+        int32_t _id;
+        int32_t _min, _max;
+        int32_t _pos_x, _pos_y;
+        int32_t _colx, _coly, _colz, _colw;
+        int32_t _relevance, _type, _presentation;
+
+        HabCom::Timestamp _time;
+        bool* _boolean;
+        float* _number;
+        std::string* _text;
+    };
+
+    //This lock handles thread safe access to a mutable node
+    class MutableNodeLock
+    {
+    public:
+        MutableNodeLock(NodeWrapper& _wrapper) 
+            : node_wrapper(_wrapper), mutable_node_ptr(_wrapper.mutable_node())
+        {
+
+        }
+
+        ~MutableNodeLock()
+        {
+            if(mutable_node_ptr)
+            {
+                std::scoped_lock lock(node_wrapper.get_mutex());
+                //let the wrapper handle the updated version
+            }
+        }
+
+        MutableNodeType* operator->() const {
+            return mutable_node_ptr.get();
+        }
+
+            
+    
+    private:
+        NodeWrapper &node_wrapper;
+        std::unique_ptr<MutableNodeType> mutable_node_ptr;
+    };
+
+    //This lock provides thread safe access to the data of a Node message
+    class MutableNodeDataLock
+    {
+
     };
 }

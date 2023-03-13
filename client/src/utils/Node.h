@@ -15,13 +15,13 @@ namespace Habitify
     {
     public:
         Node(){};
-        virtual ~Node(){};
+        virtual ~Node();
 
         virtual void OnAttach() override;
         virtual void OnUIRender() override;
 
         inline const HabCom::Node *get_node(){
-            return node.get_sendable();
+            return node.get_node();
         };
     
     protected:
@@ -46,6 +46,7 @@ namespace Habitify
 
         //Metadata
         NodeWrapper node;
+        MutableNodeLock* locked_node_ptr;
     };
 
 }

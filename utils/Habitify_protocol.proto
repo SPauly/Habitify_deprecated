@@ -12,48 +12,59 @@ message Id{
     int32 id = 1;
 }
 
-message Node{
-  string name = 1;
-  Id id = 2;
-  Relevance relevance = 3;
-  NodeType type = 4;
-  NodeTypePresentation type_representation = 5;
-  ImColor color = 6;
-  int32 min = 7;
-  int32 max = 8;
-
-  optional bool boolean = 9;
-  optional float number = 10;
-  optional string text = 11;
-}
-
 message Status{
   int32 flag = 1;
 }
 
-//types
-message ImColor{
-  float x = 1;
-  float y = 2;
-  float z = 3;
-  float w = 4;
+message Timestamp{
+  int64 seconds = 1;
+  int32 nanos = 2;
 }
 
-enum Relevance{
+message NodeData{
+  Timestamp time = 1;
+  optional bool boolean = 2;
+  optional float number = 3;
+  optional string text = 4;
+}
+
+message Node{
+  string name = 1;
+  Id id = 2;
+  int32 min = 3;
+  int32 max = 4;
+  int32 pos_x = 5;
+  int32 pos_y = 6;
+  Color color = 7;
+  Relevance relevance = 8;
+  NodeType type = 9;
+  NodeTypePresentation presentation = 10;
+  
+  message Color{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float w = 4;
+  }
+
+  enum Relevance{
     REQUIRED = 0;
     NOTREQUIRED = 1;
-}
+  }
 
-enum NodeType{
-  BOOLEAN = 0;
-  INT = 1;
-  FLOAT = 2;
-  STRING = 3;
-}
+  enum NodeType{
+    BOOLEAN = 0;
+    INT = 1;
+    FLOAT = 2;
+    STRING = 3;
+  }
 
-enum NodeTypePresentation {
-  INPUT = 0;
-  SLIDER = 1;
-  ONE_LINER = 2;
-  LONG = 3;
+  enum NodeTypePresentation {
+    INPUT = 0;
+    SLIDER = 1;
+    ONE_LINER = 2;
+    LONG = 3;
+  }
+
+  repeated NodeData data = 11;
 }
