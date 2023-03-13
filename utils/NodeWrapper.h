@@ -48,7 +48,14 @@ namespace Habitify
         NodeWrapper &operator=(HabCom::Node &&_move) noexcept
         {
             std::scoped_lock lock(mux);
-            node = std::make_unique<HabCom::Node>(std::move(_move));
+            node = std::move(_move);
+            return *this;
+        }
+        
+        NodeWrapper &operator=(MutableNodeType &&_move) noexcept
+        {
+            std::scoped_lock lock(mux);
+            //move data from node
             return *this;
         }
 
